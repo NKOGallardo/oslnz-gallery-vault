@@ -119,11 +119,15 @@ export const getImageDownloadUrl = createServerFn({ method: "POST" })
       .createSignedUrl(img.storage_path, 300, { download: img.original_filename });
     if (!signed?.signedUrl) return { ok: false as const, error: "Could not sign URL." };
 
-    await supabaseAdmin.rpc("increment_gallery_download").throwOnError = undefined as never;
-    // Fallback update (no RPC defined): increment directly.
+    // Increment download counter (read-then-write; sufficient for stats).
+    const { data: g } = await supabaseAdmin
+      .from("galleries")
+      .select("download_count")
+      .eq("id", payload.gid)
+      .maybeSingle();
     await supabaseAdmin
       .from("galleries")
-      .update({ download_count: 1 })
+      .update({ download_count: (g?.download_count ?? 0) + 1 })
       .eq("id", payload.gid);
 
     return { ok: true as const, url: signed.signedUrl };

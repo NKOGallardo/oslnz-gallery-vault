@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as GTokenRouteImport } from './routes/g.$token'
+import { Route as ApiPublicGalleryTokenZipRouteImport } from './routes/api/public/gallery.$token.zip'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -22,31 +23,41 @@ const GTokenRoute = GTokenRouteImport.update({
   path: '/g/$token',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicGalleryTokenZipRoute =
+  ApiPublicGalleryTokenZipRouteImport.update({
+    id: '/api/public/gallery/$token/zip',
+    path: '/api/public/gallery/$token/zip',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/g/$token': typeof GTokenRoute
+  '/api/public/gallery/$token/zip': typeof ApiPublicGalleryTokenZipRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/g/$token': typeof GTokenRoute
+  '/api/public/gallery/$token/zip': typeof ApiPublicGalleryTokenZipRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/g/$token': typeof GTokenRoute
+  '/api/public/gallery/$token/zip': typeof ApiPublicGalleryTokenZipRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/g/$token'
+  fullPaths: '/' | '/g/$token' | '/api/public/gallery/$token/zip'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/g/$token'
-  id: '__root__' | '/' | '/g/$token'
+  to: '/' | '/g/$token' | '/api/public/gallery/$token/zip'
+  id: '__root__' | '/' | '/g/$token' | '/api/public/gallery/$token/zip'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   GTokenRoute: typeof GTokenRoute
+  ApiPublicGalleryTokenZipRoute: typeof ApiPublicGalleryTokenZipRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -65,12 +76,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GTokenRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/gallery/$token/zip': {
+      id: '/api/public/gallery/$token/zip'
+      path: '/api/public/gallery/$token/zip'
+      fullPath: '/api/public/gallery/$token/zip'
+      preLoaderRoute: typeof ApiPublicGalleryTokenZipRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   GTokenRoute: GTokenRoute,
+  ApiPublicGalleryTokenZipRoute: ApiPublicGalleryTokenZipRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

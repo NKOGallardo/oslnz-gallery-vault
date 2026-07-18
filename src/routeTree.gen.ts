@@ -9,14 +9,26 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ManageRouteImport } from './routes/manage'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ManageSecretRouteImport } from './routes/manage.$secret'
 import { Route as GTokenRouteImport } from './routes/g.$token'
 import { Route as ApiPublicGalleryTokenZipRouteImport } from './routes/api/public/gallery.$token.zip'
 
+const ManageRoute = ManageRouteImport.update({
+  id: '/manage',
+  path: '/manage',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const ManageSecretRoute = ManageSecretRouteImport.update({
+  id: '/$secret',
+  path: '/$secret',
+  getParentRoute: () => ManageRoute,
 } as any)
 const GTokenRoute = GTokenRouteImport.update({
   id: '/g/$token',
@@ -32,42 +44,79 @@ const ApiPublicGalleryTokenZipRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/manage': typeof ManageRouteWithChildren
   '/g/$token': typeof GTokenRoute
+  '/manage/$secret': typeof ManageSecretRoute
   '/api/public/gallery/$token/zip': typeof ApiPublicGalleryTokenZipRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/manage': typeof ManageRouteWithChildren
   '/g/$token': typeof GTokenRoute
+  '/manage/$secret': typeof ManageSecretRoute
   '/api/public/gallery/$token/zip': typeof ApiPublicGalleryTokenZipRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/manage': typeof ManageRouteWithChildren
   '/g/$token': typeof GTokenRoute
+  '/manage/$secret': typeof ManageSecretRoute
   '/api/public/gallery/$token/zip': typeof ApiPublicGalleryTokenZipRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/g/$token' | '/api/public/gallery/$token/zip'
+  fullPaths:
+    | '/'
+    | '/manage'
+    | '/g/$token'
+    | '/manage/$secret'
+    | '/api/public/gallery/$token/zip'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/g/$token' | '/api/public/gallery/$token/zip'
-  id: '__root__' | '/' | '/g/$token' | '/api/public/gallery/$token/zip'
+  to:
+    | '/'
+    | '/manage'
+    | '/g/$token'
+    | '/manage/$secret'
+    | '/api/public/gallery/$token/zip'
+  id:
+    | '__root__'
+    | '/'
+    | '/manage'
+    | '/g/$token'
+    | '/manage/$secret'
+    | '/api/public/gallery/$token/zip'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ManageRoute: typeof ManageRouteWithChildren
   GTokenRoute: typeof GTokenRoute
   ApiPublicGalleryTokenZipRoute: typeof ApiPublicGalleryTokenZipRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/manage': {
+      id: '/manage'
+      path: '/manage'
+      fullPath: '/manage'
+      preLoaderRoute: typeof ManageRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/manage/$secret': {
+      id: '/manage/$secret'
+      path: '/$secret'
+      fullPath: '/manage/$secret'
+      preLoaderRoute: typeof ManageSecretRouteImport
+      parentRoute: typeof ManageRoute
     }
     '/g/$token': {
       id: '/g/$token'
@@ -86,8 +135,20 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface ManageRouteChildren {
+  ManageSecretRoute: typeof ManageSecretRoute
+}
+
+const ManageRouteChildren: ManageRouteChildren = {
+  ManageSecretRoute: ManageSecretRoute,
+}
+
+const ManageRouteWithChildren =
+  ManageRoute._addFileChildren(ManageRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ManageRoute: ManageRouteWithChildren,
   GTokenRoute: GTokenRoute,
   ApiPublicGalleryTokenZipRoute: ApiPublicGalleryTokenZipRoute,
 }

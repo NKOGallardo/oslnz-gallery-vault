@@ -9,17 +9,11 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as ManageRouteImport } from './routes/manage'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ManageSecretRouteImport } from './routes/manage.$secret'
 import { Route as GTokenRouteImport } from './routes/g.$token'
 import { Route as ApiPublicGalleryTokenZipRouteImport } from './routes/api/public/gallery.$token.zip'
 
-const ManageRoute = ManageRouteImport.update({
-  id: '/manage',
-  path: '/manage',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -44,14 +38,12 @@ const ApiPublicGalleryTokenZipRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/manage': typeof ManageRouteWithChildren
   '/g/$token': typeof GTokenRoute
   '/manage/$secret': typeof ManageSecretRoute
   '/api/public/gallery/$token/zip': typeof ApiPublicGalleryTokenZipRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/manage': typeof ManageRouteWithChildren
   '/g/$token': typeof GTokenRoute
   '/manage/$secret': typeof ManageSecretRoute
   '/api/public/gallery/$token/zip': typeof ApiPublicGalleryTokenZipRoute
@@ -59,7 +51,6 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/manage': typeof ManageRouteWithChildren
   '/g/$token': typeof GTokenRoute
   '/manage/$secret': typeof ManageSecretRoute
   '/api/public/gallery/$token/zip': typeof ApiPublicGalleryTokenZipRoute
@@ -68,21 +59,14 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/manage'
     | '/g/$token'
     | '/manage/$secret'
     | '/api/public/gallery/$token/zip'
   fileRoutesByTo: FileRoutesByTo
-  to:
-    | '/'
-    | '/manage'
-    | '/g/$token'
-    | '/manage/$secret'
-    | '/api/public/gallery/$token/zip'
+  to: '/' | '/g/$token' | '/manage/$secret' | '/api/public/gallery/$token/zip'
   id:
     | '__root__'
     | '/'
-    | '/manage'
     | '/g/$token'
     | '/manage/$secret'
     | '/api/public/gallery/$token/zip'
@@ -90,20 +74,12 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  ManageRoute: typeof ManageRouteWithChildren
   GTokenRoute: typeof GTokenRoute
   ApiPublicGalleryTokenZipRoute: typeof ApiPublicGalleryTokenZipRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/manage': {
-      id: '/manage'
-      path: '/manage'
-      fullPath: '/manage'
-      preLoaderRoute: typeof ManageRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/': {
       id: '/'
       path: '/'
@@ -135,23 +111,21 @@ declare module '@tanstack/react-router' {
   }
 }
 
-interface ManageRouteChildren {
-  ManageSecretRoute: typeof ManageSecretRoute
-}
-
-const ManageRouteChildren: ManageRouteChildren = {
-  ManageSecretRoute: ManageSecretRoute,
-}
-
-const ManageRouteWithChildren =
-  ManageRoute._addFileChildren(ManageRouteChildren)
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  ManageRoute: ManageRouteWithChildren,
   GTokenRoute: GTokenRoute,
   ApiPublicGalleryTokenZipRoute: ApiPublicGalleryTokenZipRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}

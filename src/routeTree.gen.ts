@@ -20,9 +20,9 @@ const IndexRoute = IndexRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const ManageSecretRoute = ManageSecretRouteImport.update({
-  id: '/$secret',
-  path: '/$secret',
-  getParentRoute: () => ManageRoute,
+  id: '/manage/$secret',
+  path: '/manage/$secret',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const GTokenRoute = GTokenRouteImport.update({
   id: '/g/$token',
@@ -75,6 +75,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   GTokenRoute: typeof GTokenRoute
+  ManageSecretRoute: typeof ManageSecretRoute
   ApiPublicGalleryTokenZipRoute: typeof ApiPublicGalleryTokenZipRoute
 }
 
@@ -89,10 +90,10 @@ declare module '@tanstack/react-router' {
     }
     '/manage/$secret': {
       id: '/manage/$secret'
-      path: '/$secret'
+      path: '/manage/$secret'
       fullPath: '/manage/$secret'
       preLoaderRoute: typeof ManageSecretRouteImport
-      parentRoute: typeof ManageRoute
+      parentRoute: typeof rootRouteImport
     }
     '/g/$token': {
       id: '/g/$token'
@@ -114,18 +115,9 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   GTokenRoute: GTokenRoute,
+  ManageSecretRoute: ManageSecretRoute,
   ApiPublicGalleryTokenZipRoute: ApiPublicGalleryTokenZipRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

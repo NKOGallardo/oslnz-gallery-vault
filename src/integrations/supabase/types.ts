@@ -14,7 +14,133 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      galleries: {
+        Row: {
+          client_name: string
+          created_at: string
+          download_count: number
+          event_date: string | null
+          event_name: string | null
+          expires_at: string | null
+          id: string
+          photographer_id: string
+          pin: string
+          title: string
+        }
+        Insert: {
+          client_name: string
+          created_at?: string
+          download_count?: number
+          event_date?: string | null
+          event_name?: string | null
+          expires_at?: string | null
+          id?: string
+          photographer_id: string
+          pin: string
+          title: string
+        }
+        Update: {
+          client_name?: string
+          created_at?: string
+          download_count?: number
+          event_date?: string | null
+          event_name?: string | null
+          expires_at?: string | null
+          id?: string
+          photographer_id?: string
+          pin?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "galleries_photographer_id_fkey"
+            columns: ["photographer_id"]
+            isOneToOne: false
+            referencedRelation: "photographers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      gallery_images: {
+        Row: {
+          created_at: string
+          gallery_id: string
+          id: string
+          original_filename: string
+          size_bytes: number
+          sort_order: number
+          storage_path: string
+        }
+        Insert: {
+          created_at?: string
+          gallery_id: string
+          id?: string
+          original_filename: string
+          size_bytes?: number
+          sort_order?: number
+          storage_path: string
+        }
+        Update: {
+          created_at?: string
+          gallery_id?: string
+          id?: string
+          original_filename?: string
+          size_bytes?: number
+          sort_order?: number
+          storage_path?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "gallery_images_gallery_id_fkey"
+            columns: ["gallery_id"]
+            isOneToOne: false
+            referencedRelation: "galleries"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      photographers: {
+        Row: {
+          created_at: string
+          id: string
+          name: string | null
+          secret_url: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name?: string | null
+          secret_url: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string | null
+          secret_url?: string
+        }
+        Relationships: []
+      }
+      pin_attempts: {
+        Row: {
+          attempted_at: string
+          id: string
+          ip: string
+          success: boolean
+        }
+        Insert: {
+          attempted_at?: string
+          id?: string
+          ip: string
+          success?: boolean
+        }
+        Update: {
+          attempted_at?: string
+          id?: string
+          ip?: string
+          success?: boolean
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

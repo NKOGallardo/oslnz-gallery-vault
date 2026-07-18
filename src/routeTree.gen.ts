@@ -10,33 +10,73 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ManageSecretRouteImport } from './routes/manage.$secret'
+import { Route as GTokenRouteImport } from './routes/g.$token'
+import { Route as ApiPublicGalleryTokenZipRouteImport } from './routes/api/public/gallery.$token.zip'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ManageSecretRoute = ManageSecretRouteImport.update({
+  id: '/manage/$secret',
+  path: '/manage/$secret',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GTokenRoute = GTokenRouteImport.update({
+  id: '/g/$token',
+  path: '/g/$token',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicGalleryTokenZipRoute =
+  ApiPublicGalleryTokenZipRouteImport.update({
+    id: '/api/public/gallery/$token/zip',
+    path: '/api/public/gallery/$token/zip',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/g/$token': typeof GTokenRoute
+  '/manage/$secret': typeof ManageSecretRoute
+  '/api/public/gallery/$token/zip': typeof ApiPublicGalleryTokenZipRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/g/$token': typeof GTokenRoute
+  '/manage/$secret': typeof ManageSecretRoute
+  '/api/public/gallery/$token/zip': typeof ApiPublicGalleryTokenZipRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/g/$token': typeof GTokenRoute
+  '/manage/$secret': typeof ManageSecretRoute
+  '/api/public/gallery/$token/zip': typeof ApiPublicGalleryTokenZipRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/g/$token'
+    | '/manage/$secret'
+    | '/api/public/gallery/$token/zip'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/g/$token' | '/manage/$secret' | '/api/public/gallery/$token/zip'
+  id:
+    | '__root__'
+    | '/'
+    | '/g/$token'
+    | '/manage/$secret'
+    | '/api/public/gallery/$token/zip'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  GTokenRoute: typeof GTokenRoute
+  ManageSecretRoute: typeof ManageSecretRoute
+  ApiPublicGalleryTokenZipRoute: typeof ApiPublicGalleryTokenZipRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +88,35 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/manage/$secret': {
+      id: '/manage/$secret'
+      path: '/manage/$secret'
+      fullPath: '/manage/$secret'
+      preLoaderRoute: typeof ManageSecretRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/g/$token': {
+      id: '/g/$token'
+      path: '/g/$token'
+      fullPath: '/g/$token'
+      preLoaderRoute: typeof GTokenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/gallery/$token/zip': {
+      id: '/api/public/gallery/$token/zip'
+      path: '/api/public/gallery/$token/zip'
+      fullPath: '/api/public/gallery/$token/zip'
+      preLoaderRoute: typeof ApiPublicGalleryTokenZipRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  GTokenRoute: GTokenRoute,
+  ManageSecretRoute: ManageSecretRoute,
+  ApiPublicGalleryTokenZipRoute: ApiPublicGalleryTokenZipRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

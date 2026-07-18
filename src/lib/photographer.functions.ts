@@ -185,7 +185,14 @@ export const updateGallery = createServerFn({ method: "POST" })
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const r = await resolvePhotographerOrBootstrap(data.secret);
     if (!r) return { ok: false as const, error: "Unauthorized" };
-    const patch: Record<string, unknown> = {};
+    const patch: {
+      title?: string;
+      client_name?: string;
+      event_name?: string | null;
+      pin?: string;
+      event_date?: string | null;
+      expires_at?: string | null;
+    } = {};
     if (data.title !== undefined) patch.title = data.title;
     if (data.clientName !== undefined) patch.client_name = data.clientName;
     if (data.eventName !== undefined) patch.event_name = data.eventName || null;
@@ -400,8 +407,9 @@ export const deleteImage = createServerFn({ method: "POST" })
       .select("id, storage_path, gallery_id, galleries!inner(photographer_id)")
       .eq("id", data.imageId)
       .maybeSingle();
-    // @ts-expect-error nested type
-    if (!img || img.galleries?.photographer_id !== r.photographer.id) return { ok: false as const };
+    const owner = (img as unknown as { galleries?: { photographer_id?: string } } | null)?.galleries
+      ?.photographer_id;
+    if (!img || owner !== r.photographer.id) return { ok: false as const };
     await supabaseAdmin.storage.from("gallery-images").remove([img.storage_path]);
     await supabaseAdmin.from("gallery_images").delete().eq("id", data.imageId);
     return { ok: true as const };

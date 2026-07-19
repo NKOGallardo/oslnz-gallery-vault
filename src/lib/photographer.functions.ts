@@ -9,6 +9,18 @@ async function resolvePhotographerOrBootstrap(secret: string) {
   const bootstrap = process.env.PHOTOGRAPHER_BOOTSTRAP_CODE;
 
   if (bootstrap && secret === bootstrap) {
+    // Master bootstrap key: always resolves to the (single) photographer.
+    // Create one on first use; otherwise return the existing account so
+    // the code keeps working across sessions and galleries persist.
+    const { data: existing } = await supabaseAdmin
+      .from("photographers")
+      .select("id, secret_url, name")
+      .order("created_at", { ascending: true })
+      .limit(1)
+      .maybeSingle();
+    if (existing) {
+      return { photographer: existing, bootstrapped: false as const };
+    }
     const fresh = newSecretUrl();
     const { data, error } = await supabaseAdmin
       .from("photographers")

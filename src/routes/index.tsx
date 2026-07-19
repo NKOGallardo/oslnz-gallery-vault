@@ -74,10 +74,11 @@ function PinEntry() {
             spellCheck={false}
             value={pin}
             onChange={(e) => {
-              setPin(e.target.value);
+              setPin(e.target.value.slice(0, 5));
               if (error) setError(null);
             }}
-            placeholder="Enter your PIN"
+            placeholder="Enter your 5-character PIN"
+            maxLength={5}
             className="w-full rounded-2xl border border-white/10 bg-white/[0.03] px-6 py-5 text-center text-2xl tracking-[0.35em] font-display font-medium uppercase text-foreground outline-none placeholder:tracking-[0.2em] placeholder:normal-case placeholder:text-muted-foreground/60 focus:border-pine focus:bg-white/[0.06]"
           />
           <button

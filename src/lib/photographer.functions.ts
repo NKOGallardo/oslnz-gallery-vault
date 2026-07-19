@@ -9,6 +9,18 @@ async function resolvePhotographerOrBootstrap(secret: string) {
   const bootstrap = process.env.PHOTOGRAPHER_BOOTSTRAP_CODE;
 
   if (bootstrap && secret === bootstrap) {
+    // Master bootstrap key: always resolves to the (single) photographer.
+    // Create one on first use; otherwise return the existing account so
+    // the code keeps working across sessions and galleries persist.
+    const { data: existing } = await supabaseAdmin
+      .from("photographers")
+      .select("id, secret_url, name")
+      .order("created_at", { ascending: true })
+      .limit(1)
+      .maybeSingle();
+    if (existing) {
+      return { photographer: existing, bootstrapped: false as const };
+    }
     const fresh = newSecretUrl();
     const { data, error } = await supabaseAdmin
       .from("photographers")
@@ -121,7 +133,7 @@ export const createGallery = createServerFn({ method: "POST" })
         title: z.string().trim().min(1).max(200),
         clientName: z.string().trim().min(1).max(200),
         eventName: z.string().trim().max(200).optional(),
-        pin: z.string().trim().min(3).max(32),
+        pin: z.string().trim().regex(/^[A-Za-z0-9]{5}$/, "PIN must be exactly 5 letters or digits"),
         eventDate: z.string().nullable().optional(),
         expiresAt: z.string().nullable().optional(),
       })
@@ -175,7 +187,7 @@ export const updateGallery = createServerFn({ method: "POST" })
         title: z.string().trim().min(1).max(200).optional(),
         clientName: z.string().trim().min(1).max(200).optional(),
         eventName: z.string().trim().max(200).nullable().optional(),
-        pin: z.string().trim().min(3).max(32).optional(),
+        pin: z.string().trim().regex(/^[A-Za-z0-9]{5}$/, "PIN must be exactly 5 letters or digits").optional(),
         eventDate: z.string().nullable().optional(),
         expiresAt: z.string().nullable().optional(),
       })
@@ -236,7 +248,13 @@ export const deleteGallery = createServerFn({ method: "POST" })
 // -------- Duplicate gallery (metadata + image records; storage paths reused) --------
 export const duplicateGallery = createServerFn({ method: "POST" })
   .inputValidator((d: { secret: string; id: string; pin: string }) =>
-    z.object({ secret: z.string(), id: z.string().uuid(), pin: z.string().trim().min(3).max(32) }).parse(d),
+    z
+      .object({
+        secret: z.string(),
+        id: z.string().uuid(),
+        pin: z.string().trim().regex(/^[A-Za-z0-9]{5}$/, "PIN must be exactly 5 letters or digits"),
+      })
+      .parse(d),
   )
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");

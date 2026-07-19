@@ -404,7 +404,7 @@ function CreateGalleryView({
   const [title, setTitle] = useState("");
   const [clientName, setClientName] = useState("");
   const [eventName, setEventName] = useState("");
-  const [pin, setPin] = useState(String(Math.floor(1000 + Math.random() * 9000)));
+  const [pin, setPin] = useState(String(Math.floor(10000 + Math.random() * 90000)));
   const [eventDate, setEventDate] = useState("");
   const [expiresAt, setExpiresAt] = useState("");
   const [busy, setBusy] = useState(false);
@@ -439,7 +439,12 @@ function CreateGalleryView({
         <Field label="Gallery Name" value={title} onChange={setTitle} required />
         <Field label="Event Name" value={eventName} onChange={setEventName} />
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <Field label="Gallery PIN" value={pin} onChange={setPin} required />
+          <Field
+            label="Gallery PIN (5 characters)"
+            value={pin}
+            onChange={(v) => setPin(v.slice(0, 5))}
+            required
+          />
           <Field label="Event Date" type="date" value={eventDate} onChange={setEventDate} />
         </div>
         <Field

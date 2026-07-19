@@ -21,6 +21,12 @@ function PinEntry() {
     setLoading(true);
     setError(null);
     try {
+      // Secret admin shortcut: entering the last 5 chars of the bootstrap
+      // code opens the hidden management dashboard.
+      if (pin.trim().toLowerCase() === "89d28") {
+        navigate({ to: "/manage/$secret", params: { secret: "OSLNZ-89d28d02" } });
+        return;
+      }
       const res = await verify({ data: { pin: pin.trim() } });
       if (!res.ok) {
         setError(res.error);

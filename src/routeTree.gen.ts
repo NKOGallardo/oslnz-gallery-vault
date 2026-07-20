@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ManageSecretRouteImport } from './routes/manage.$secret'
 import { Route as GTokenRouteImport } from './routes/g.$token'
+import { Route as ApiPublicAdminLoginRouteImport } from './routes/api/public/admin.login'
 import { Route as ApiPublicGalleryTokenZipRouteImport } from './routes/api/public/gallery.$token.zip'
 
 const IndexRoute = IndexRouteImport.update({
@@ -29,6 +30,11 @@ const GTokenRoute = GTokenRouteImport.update({
   path: '/g/$token',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicAdminLoginRoute = ApiPublicAdminLoginRouteImport.update({
+  id: '/api/public/admin/login',
+  path: '/api/public/admin/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicGalleryTokenZipRoute =
   ApiPublicGalleryTokenZipRouteImport.update({
     id: '/api/public/gallery/$token/zip',
@@ -40,12 +46,14 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/g/$token': typeof GTokenRoute
   '/manage/$secret': typeof ManageSecretRoute
+  '/api/public/admin/login': typeof ApiPublicAdminLoginRoute
   '/api/public/gallery/$token/zip': typeof ApiPublicGalleryTokenZipRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/g/$token': typeof GTokenRoute
   '/manage/$secret': typeof ManageSecretRoute
+  '/api/public/admin/login': typeof ApiPublicAdminLoginRoute
   '/api/public/gallery/$token/zip': typeof ApiPublicGalleryTokenZipRoute
 }
 export interface FileRoutesById {
@@ -53,6 +61,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/g/$token': typeof GTokenRoute
   '/manage/$secret': typeof ManageSecretRoute
+  '/api/public/admin/login': typeof ApiPublicAdminLoginRoute
   '/api/public/gallery/$token/zip': typeof ApiPublicGalleryTokenZipRoute
 }
 export interface FileRouteTypes {
@@ -61,14 +70,21 @@ export interface FileRouteTypes {
     | '/'
     | '/g/$token'
     | '/manage/$secret'
+    | '/api/public/admin/login'
     | '/api/public/gallery/$token/zip'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/g/$token' | '/manage/$secret' | '/api/public/gallery/$token/zip'
+  to:
+    | '/'
+    | '/g/$token'
+    | '/manage/$secret'
+    | '/api/public/admin/login'
+    | '/api/public/gallery/$token/zip'
   id:
     | '__root__'
     | '/'
     | '/g/$token'
     | '/manage/$secret'
+    | '/api/public/admin/login'
     | '/api/public/gallery/$token/zip'
   fileRoutesById: FileRoutesById
 }
@@ -76,6 +92,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   GTokenRoute: typeof GTokenRoute
   ManageSecretRoute: typeof ManageSecretRoute
+  ApiPublicAdminLoginRoute: typeof ApiPublicAdminLoginRoute
   ApiPublicGalleryTokenZipRoute: typeof ApiPublicGalleryTokenZipRoute
 }
 
@@ -102,6 +119,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GTokenRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/admin/login': {
+      id: '/api/public/admin/login'
+      path: '/api/public/admin/login'
+      fullPath: '/api/public/admin/login'
+      preLoaderRoute: typeof ApiPublicAdminLoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/gallery/$token/zip': {
       id: '/api/public/gallery/$token/zip'
       path: '/api/public/gallery/$token/zip'
@@ -116,6 +140,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   GTokenRoute: GTokenRoute,
   ManageSecretRoute: ManageSecretRoute,
+  ApiPublicAdminLoginRoute: ApiPublicAdminLoginRoute,
   ApiPublicGalleryTokenZipRoute: ApiPublicGalleryTokenZipRoute,
 }
 export const routeTree = rootRouteImport

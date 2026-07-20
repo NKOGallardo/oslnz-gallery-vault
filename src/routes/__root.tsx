@@ -85,13 +85,16 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "robots", content: "noindex,nofollow" },
+      { name: "twitter:title", content: "OSLNZ — Private Client Gallery" },
+      { name: "twitter:description", content: "Enter your private OSLNZ gallery PIN to securely view and download your photos." },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/SvHuDEEmhGVcelxJTSwFZ4C14Zp2/social-images/social-1784546017221-Logo.webp" },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/SvHuDEEmhGVcelxJTSwFZ4C14Zp2/social-images/social-1784546017221-Logo.webp" },
     ],
     links: [
       {
         rel: "stylesheet",
         href: appCss,
       },
-      { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {

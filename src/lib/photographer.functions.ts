@@ -54,6 +54,22 @@ export const openDashboard = createServerFn({ method: "POST" })
     };
   });
 
+// -------- Admin quick-login (short code -> secret URL) --------
+export const adminLogin = createServerFn({ method: "POST" })
+  .inputValidator((d: { code: string }) =>
+    z.object({ code: z.string().trim().min(1).max(50) }).parse(d),
+  )
+  .handler(async ({ data }) => {
+    const expected = process.env.ADMIN_LOGIN_CODE;
+    if (!expected || data.code !== expected) {
+      return { ok: false as const, error: "Invalid code" };
+    }
+    const bootstrap = process.env.PHOTOGRAPHER_BOOTSTRAP_CODE;
+    const result = bootstrap ? await resolvePhotographerOrBootstrap(bootstrap) : null;
+    if (!result) return { ok: false as const, error: "Admin account not initialised" };
+    return { ok: true as const, secret: result.photographer.secret_url };
+  });
+
 // -------- Dashboard stats --------
 export const getDashboardStats = createServerFn({ method: "POST" })
   .inputValidator((d: { secret: string }) => z.object({ secret: z.string() }).parse(d))

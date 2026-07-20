@@ -87,8 +87,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "robots", content: "noindex,nofollow" },
       { name: "twitter:title", content: "OSLNZ — Private Client Gallery" },
       { name: "twitter:description", content: "Enter your private OSLNZ gallery PIN to securely view and download your photos." },
-      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/SvHuDEEmhGVcelxJTSwFZ4C14Zp2/social-images/social-1784546017221-Logo.webp" },
-      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/SvHuDEEmhGVcelxJTSwFZ4C14Zp2/social-images/social-1784546017221-Logo.webp" },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/c5c2e741-e717-4953-a116-026218ba15a6/id-preview-6f7534b4--e24504e1-d255-45c5-9a48-f0b737a90c91.lovable.app-1784547167577.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/c5c2e741-e717-4953-a116-026218ba15a6/id-preview-6f7534b4--e24504e1-d255-45c5-9a48-f0b737a90c91.lovable.app-1784547167577.png" },
     ],
     links: [
       {

@@ -1,7 +1,8 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { verifyPin } from "@/lib/gallery.functions";
+import { adminLogin } from "@/lib/photographer.functions";
 import { OslnzLogo } from "@/components/OslnzLogo";
 
 export const Route = createFileRoute("/")({
@@ -11,9 +12,42 @@ export const Route = createFileRoute("/")({
 function PinEntry() {
   const navigate = useNavigate();
   const verify = useServerFn(verifyPin);
+  const login = useServerFn(adminLogin);
   const [pin, setPin] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [adminOpen, setAdminOpen] = useState(false);
+  const [adminCode, setAdminCode] = useState("");
+  const [adminLoading, setAdminLoading] = useState(false);
+  const [adminError, setAdminError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!adminOpen) return;
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape") setAdminOpen(false);
+    }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [adminOpen]);
+
+  async function onAdminSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!adminCode.trim() || adminLoading) return;
+    setAdminLoading(true);
+    setAdminError(null);
+    try {
+      const res = await login({ data: { code: adminCode.trim() } });
+      if (!res.ok) {
+        setAdminError(res.error);
+        setAdminLoading(false);
+        return;
+      }
+      navigate({ to: "/manage/$secret", params: { secret: res.secret } });
+    } catch {
+      setAdminError("Something went wrong. Please try again.");
+      setAdminLoading(false);
+    }
+  }
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -47,7 +81,20 @@ function PinEntry() {
       />
 
       <header className="mx-auto max-w-6xl px-8 pt-10">
-        <OslnzLogo />
+        <div className="flex items-center justify-between">
+          <OslnzLogo />
+          <button
+            type="button"
+            onClick={() => {
+              setAdminOpen(true);
+              setAdminError(null);
+              setAdminCode("");
+            }}
+            className="rounded-full border border-white/10 bg-white/[0.03] px-4 py-2 text-xs tracking-[0.25em] uppercase text-muted-foreground transition hover:border-pine hover:text-foreground"
+          >
+            Admin Login
+          </button>
+        </div>
       </header>
 
       <section className="mx-auto flex min-h-[calc(100vh-6rem)] max-w-2xl flex-col items-center justify-center px-6 pb-24 text-center">
@@ -103,6 +150,64 @@ function PinEntry() {
       <footer className="pb-8 text-center text-xs text-muted-foreground/60">
         © {new Date().getFullYear()} OSLNZ. All galleries are private.
       </footer>
+
+      {adminOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4 backdrop-blur-sm"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="admin-login-title"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setAdminOpen(false);
+          }}
+        >
+          <div className="w-full max-w-sm rounded-2xl border border-white/10 bg-background p-8 shadow-2xl">
+            <div className="mb-6 flex items-center justify-between">
+              <h2 id="admin-login-title" className="font-heading text-xl font-semibold">
+                Admin Login
+              </h2>
+              <button
+                type="button"
+                onClick={() => setAdminOpen(false)}
+                className="text-muted-foreground hover:text-foreground"
+                aria-label="Close"
+              >
+                ✕
+              </button>
+            </div>
+            <form onSubmit={onAdminSubmit}>
+              <label htmlFor="admin-code" className="sr-only">
+                Admin code
+              </label>
+              <input
+                id="admin-code"
+                type="password"
+                autoFocus
+                autoComplete="off"
+                value={adminCode}
+                onChange={(e) => {
+                  setAdminCode(e.target.value);
+                  if (adminError) setAdminError(null);
+                }}
+                placeholder="Enter admin code"
+                className="w-full rounded-xl border border-white/10 bg-white/[0.03] px-5 py-4 text-center text-lg tracking-[0.3em] font-display outline-none placeholder:tracking-normal placeholder:text-muted-foreground/60 focus:border-pine focus:bg-white/[0.06]"
+              />
+              <button
+                type="submit"
+                disabled={adminLoading || !adminCode.trim()}
+                className="mt-4 w-full rounded-xl bg-pine px-6 py-4 text-sm font-semibold tracking-wide text-pine-foreground shadow-lg shadow-black/40 transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {adminLoading ? "Verifying…" : "Enter Dashboard"}
+              </button>
+              {adminError && (
+                <p className="mt-3 text-sm text-destructive" role="alert">
+                  {adminError}
+                </p>
+              )}
+            </form>
+          </div>
+        </div>
+      )}
     </main>
   );
 }

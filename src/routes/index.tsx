@@ -90,7 +90,7 @@ function PinEntry() {
               setAdminError(null);
               setAdminCode("");
             }}
-            className="rounded-full border border-white/10 bg-white/[0.03] px-4 py-2 text-xs tracking-[0.25em] uppercase text-muted-foreground transition hover:border-pine hover:text-foreground"
+            className="rounded-full border border-black/10 bg-black/[0.03] px-4 py-2 text-xs tracking-[0.25em] uppercase text-muted-foreground transition hover:border-pine hover:text-foreground"
           >
             Admin Login
           </button>
@@ -126,12 +126,12 @@ function PinEntry() {
             }}
             placeholder="Enter your 5-character PIN"
             maxLength={5}
-            className="w-full rounded-2xl border border-white/10 bg-white/[0.03] px-6 py-5 text-center text-2xl tracking-[0.35em] font-display font-medium uppercase text-foreground outline-none placeholder:tracking-[0.2em] placeholder:normal-case placeholder:text-muted-foreground/60 focus:border-pine focus:bg-white/[0.06]"
+            className="w-full rounded-2xl border border-black/10 bg-black/[0.03] px-6 py-5 text-center text-2xl tracking-[0.35em] font-display font-medium uppercase text-foreground outline-none placeholder:tracking-[0.2em] placeholder:normal-case placeholder:text-muted-foreground/60 focus:border-pine focus:bg-black/[0.06]"
           />
           <button
             type="submit"
             disabled={loading || !pin.trim()}
-            className="mt-5 w-full rounded-2xl bg-pine px-6 py-5 text-base font-semibold tracking-wide text-pine-foreground shadow-lg shadow-black/40 transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60"
+            className="mt-5 w-full rounded-2xl bg-pine px-6 py-5 text-base font-semibold tracking-wide text-pine-foreground shadow-lg shadow-black/15 transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60"
           >
             {loading ? "Verifying…" : "View Gallery"}
           </button>
@@ -153,7 +153,7 @@ function PinEntry() {
 
       {adminOpen && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4 backdrop-blur-sm"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4 backdrop-blur-sm"
           role="dialog"
           aria-modal="true"
           aria-labelledby="admin-login-title"
@@ -161,7 +161,7 @@ function PinEntry() {
             if (e.target === e.currentTarget) setAdminOpen(false);
           }}
         >
-          <div className="w-full max-w-sm rounded-2xl border border-white/10 bg-background p-8 shadow-2xl">
+          <div className="w-full max-w-sm rounded-2xl border border-black/10 bg-background p-8 shadow-2xl">
             <div className="mb-6 flex items-center justify-between">
               <h2 id="admin-login-title" className="font-heading text-xl font-semibold">
                 Admin Login
@@ -190,12 +190,12 @@ function PinEntry() {
                   if (adminError) setAdminError(null);
                 }}
                 placeholder="Enter admin code"
-                className="w-full rounded-xl border border-white/10 bg-white/[0.03] px-5 py-4 text-center text-lg tracking-[0.3em] font-display outline-none placeholder:tracking-normal placeholder:text-muted-foreground/60 focus:border-pine focus:bg-white/[0.06]"
+                className="w-full rounded-xl border border-black/10 bg-black/[0.03] px-5 py-4 text-center text-lg tracking-[0.3em] font-display outline-none placeholder:tracking-normal placeholder:text-muted-foreground/60 focus:border-pine focus:bg-black/[0.06]"
               />
               <button
                 type="submit"
                 disabled={adminLoading || !adminCode.trim()}
-                className="mt-4 w-full rounded-xl bg-pine px-6 py-4 text-sm font-semibold tracking-wide text-pine-foreground shadow-lg shadow-black/40 transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60"
+                className="mt-4 w-full rounded-xl bg-pine px-6 py-4 text-sm font-semibold tracking-wide text-pine-foreground shadow-lg shadow-black/15 transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {adminLoading ? "Verifying…" : "Enter Dashboard"}
               </button>

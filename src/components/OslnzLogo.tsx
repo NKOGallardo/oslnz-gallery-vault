@@ -22,10 +22,7 @@ export function OslnzLogo({ className, size = 32 }: Props) {
         <circle cx="20" cy="20" r="2.5" fill="currentColor" />
         <circle cx="30" cy="10.5" r="1.25" fill="currentColor" />
       </svg>
-      <span
-        className="font-display font-semibold tracking-[0.32em] text-[0.95rem]"
-        style={{ fontFamily: "Poppins, sans-serif" }}
-      >
+      <span className="font-display font-semibold tracking-[0.28em] text-[0.95rem]">
         OSLNZ
       </span>
     </div>

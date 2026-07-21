@@ -8,36 +8,37 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&family=Poppins:wght@500;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@400;500;600&display=swap"
       rel="stylesheet"
     />
     <style>
       :root {
-        --black: #000000;
+        --black: #1a1816;
         --white: #ffffff;
+        --cream: #faf8f5;
         --pine: #234f3d;
         --brown: #7a5230;
       }
       * { box-sizing: border-box; }
-      html, body { margin: 0; padding: 0; background: var(--black); color: var(--white); font-family: "Manrope", system-ui, sans-serif; min-height: 100vh; }
+      html, body { margin: 0; padding: 0; background: var(--cream); color: var(--black); font-family: "Inter", system-ui, sans-serif; min-height: 100vh; }
       main { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px; }
-      .card { width: 100%; max-width: 420px; background: #0a0a0a; border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 32px; }
-      h1 { font-family: "Poppins", sans-serif; font-size: 26px; margin: 0 0 4px; letter-spacing: -0.02em; }
-      p.sub { margin: 0 0 24px; color: rgba(255,255,255,0.6); font-size: 14px; }
-      label { display: block; font-size: 12px; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255,255,255,0.6); margin-bottom: 8px; }
-      input { width: 100%; background: #000; color: var(--white); border: 1px solid rgba(255,255,255,0.15); border-radius: 10px; padding: 14px 16px; font-size: 16px; font-family: inherit; outline: none; }
+      .card { width: 100%; max-width: 420px; background: var(--white); border: 1px solid rgba(0,0,0,0.08); border-radius: 16px; padding: 32px; box-shadow: 0 20px 40px -20px rgba(0,0,0,0.08); }
+      h1 { font-family: "Cormorant Garamond", serif; font-size: 30px; margin: 0 0 4px; letter-spacing: -0.01em; font-weight: 600; }
+      p.sub { margin: 0 0 24px; color: rgba(0,0,0,0.55); font-size: 14px; }
+      label { display: block; font-size: 12px; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(0,0,0,0.55); margin-bottom: 8px; }
+      input { width: 100%; background: var(--cream); color: var(--black); border: 1px solid rgba(0,0,0,0.12); border-radius: 10px; padding: 14px 16px; font-size: 16px; font-family: inherit; outline: none; }
       input:focus { border-color: var(--pine); }
-      button { width: 100%; margin-top: 16px; background: var(--pine); color: var(--white); border: 0; border-radius: 10px; padding: 14px 16px; font-size: 15px; font-weight: 600; font-family: "Poppins", sans-serif; cursor: pointer; transition: background 0.15s; }
+      button { width: 100%; margin-top: 16px; background: var(--pine); color: var(--white); border: 0; border-radius: 10px; padding: 14px 16px; font-size: 15px; font-weight: 600; font-family: "Cormorant Garamond", serif; letter-spacing: 0.04em; cursor: pointer; transition: background 0.15s; }
       button:hover:not(:disabled) { background: #2c6249; }
       button:disabled { opacity: 0.6; cursor: not-allowed; }
-      .row { display: flex; gap: 8px; align-items: center; margin-top: 20px; font-size: 13px; color: rgba(255,255,255,0.55); }
+      .row { display: flex; gap: 8px; align-items: center; margin-top: 20px; font-size: 13px; color: rgba(0,0,0,0.5); }
       .row input[type="text"] { flex: 1; padding: 10px 12px; font-size: 13px; }
       .msg { margin-top: 14px; font-size: 13px; padding: 10px 12px; border-radius: 8px; }
-      .msg.err { background: rgba(220, 38, 38, 0.12); color: #fca5a5; border: 1px solid rgba(220,38,38,0.3); }
+      .msg.err { background: rgba(220, 38, 38, 0.08); color: #991b1b; border: 1px solid rgba(220,38,38,0.25); }
       .brand { display: flex; align-items: center; gap: 10px; margin-bottom: 22px; }
       .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--pine); }
-      .brand span { font-family: "Poppins", sans-serif; font-weight: 700; letter-spacing: 0.2em; font-size: 13px; }
-      footer { text-align: center; margin-top: 24px; font-size: 12px; color: rgba(255,255,255,0.35); }
+      .brand span { font-family: "Cormorant Garamond", serif; font-weight: 700; letter-spacing: 0.2em; font-size: 13px; }
+      footer { text-align: center; margin-top: 24px; font-size: 12px; color: rgba(0,0,0,0.4); }
     </style>
   </head>
   <body>

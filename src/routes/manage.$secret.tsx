@@ -255,7 +255,7 @@ function GalleryCard({
   const link = typeof window !== "undefined" ? `${window.location.origin}/?pin=${gallery.pin}` : "";
 
   return (
-    <div className="group flex flex-col gap-4 rounded-2xl border border-white/10 bg-white/[0.03] p-5 transition hover:border-pine/60">
+    <div className="group flex flex-col gap-4 rounded-2xl border border-black/10 bg-black/[0.03] p-5 transition hover:border-pine/60">
       <div>
         <p className="text-[0.65rem] tracking-[0.3em] uppercase text-brown">{gallery.client_name}</p>
         <h3 className="mt-1 font-heading text-xl font-semibold">{gallery.title}</h3>
@@ -272,7 +272,7 @@ function GalleryCard({
         </div>
       </div>
 
-      <div className="flex items-center justify-between rounded-xl bg-black/30 px-3 py-2 font-mono text-sm">
+      <div className="flex items-center justify-between rounded-xl bg-muted px-3 py-2 font-mono text-sm">
         <span className="tracking-[0.2em]">PIN: {gallery.pin}</span>
         <button
           onClick={() => navigator.clipboard.writeText(gallery.pin)}
@@ -297,7 +297,7 @@ function GalleryCard({
         </button>
         <button
           onClick={() => navigator.clipboard.writeText(link)}
-          className="rounded-full border border-white/10 px-4 py-2 text-muted-foreground hover:text-foreground"
+          className="rounded-full border border-black/10 px-4 py-2 text-muted-foreground hover:text-foreground"
         >
           Copy Link
         </button>
@@ -307,13 +307,13 @@ function GalleryCard({
             const dataUrl = await QRCode.toDataURL(link, { margin: 1, width: 320 });
             setQr(dataUrl);
           }}
-          className="rounded-full border border-white/10 px-4 py-2 text-muted-foreground hover:text-foreground"
+          className="rounded-full border border-black/10 px-4 py-2 text-muted-foreground hover:text-foreground"
         >
           {qr ? "Hide QR" : "QR"}
         </button>
         <button
           onClick={onDuplicate}
-          className="rounded-full border border-white/10 px-4 py-2 text-muted-foreground hover:text-foreground"
+          className="rounded-full border border-black/10 px-4 py-2 text-muted-foreground hover:text-foreground"
         >
           Duplicate
         </button>

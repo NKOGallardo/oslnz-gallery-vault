@@ -64,7 +64,7 @@ function ManageDashboard() {
             onClick={() => setView({ kind: "dashboard" })}
             className={
               "rounded-full px-4 py-2 transition " +
-              (view.kind === "dashboard" ? "bg-black/10 text-foreground" : "text-muted-foreground hover:text-foreground")
+              (view.kind === "dashboard" ? "bg-white/10 text-foreground" : "text-muted-foreground hover:text-foreground")
             }
           >
             Dashboard
@@ -132,7 +132,7 @@ function AccessDenied() {
 
 function StatCard({ label, value }: { label: string; value: number | string }) {
   return (
-    <div className="rounded-2xl border border-black/10 bg-black/[0.03] p-6">
+    <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6">
       <p className="text-xs tracking-[0.3em] uppercase text-muted-foreground">{label}</p>
       <p className="mt-3 font-heading text-4xl font-semibold">{value}</p>
     </div>
@@ -189,7 +189,7 @@ function DashboardView({
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search by client or PIN…"
-              className="w-64 rounded-full border border-black/10 bg-black/[0.03] px-4 py-2 text-sm outline-none focus:border-pine"
+              className="w-64 rounded-full border border-white/10 bg-white/[0.03] px-4 py-2 text-sm outline-none focus:border-pine"
             />
             <button
               onClick={onNew}
@@ -201,7 +201,7 @@ function DashboardView({
         </div>
 
         {filtered.length === 0 ? (
-          <div className="mt-8 rounded-2xl border border-dashed border-black/10 bg-black/[0.02] p-12 text-center text-muted-foreground">
+          <div className="mt-8 rounded-2xl border border-dashed border-white/10 bg-white/[0.02] p-12 text-center text-muted-foreground">
             No galleries yet. Create your first one to get started.
           </div>
         ) : (
@@ -255,7 +255,7 @@ function GalleryCard({
   const link = typeof window !== "undefined" ? `${window.location.origin}/?pin=${gallery.pin}` : "";
 
   return (
-    <div className="group flex flex-col gap-4 rounded-2xl border border-black/10 bg-black/[0.03] p-5 transition hover:border-pine/60">
+    <div className="group flex flex-col gap-4 rounded-2xl border border-white/10 bg-white/[0.03] p-5 transition hover:border-pine/60">
       <div>
         <p className="text-[0.65rem] tracking-[0.3em] uppercase text-brown">{gallery.client_name}</p>
         <h3 className="mt-1 font-heading text-xl font-semibold">{gallery.title}</h3>
@@ -272,7 +272,7 @@ function GalleryCard({
         </div>
       </div>
 
-      <div className="flex items-center justify-between rounded-xl bg-muted px-3 py-2 font-mono text-sm">
+      <div className="flex items-center justify-between rounded-xl bg-black/30 px-3 py-2 font-mono text-sm">
         <span className="tracking-[0.2em]">PIN: {gallery.pin}</span>
         <button
           onClick={() => navigator.clipboard.writeText(gallery.pin)}
@@ -297,7 +297,7 @@ function GalleryCard({
         </button>
         <button
           onClick={() => navigator.clipboard.writeText(link)}
-          className="rounded-full border border-black/10 px-4 py-2 text-muted-foreground hover:text-foreground"
+          className="rounded-full border border-white/10 px-4 py-2 text-muted-foreground hover:text-foreground"
         >
           Copy Link
         </button>
@@ -307,13 +307,13 @@ function GalleryCard({
             const dataUrl = await QRCode.toDataURL(link, { margin: 1, width: 320 });
             setQr(dataUrl);
           }}
-          className="rounded-full border border-black/10 px-4 py-2 text-muted-foreground hover:text-foreground"
+          className="rounded-full border border-white/10 px-4 py-2 text-muted-foreground hover:text-foreground"
         >
           {qr ? "Hide QR" : "QR"}
         </button>
         <button
           onClick={onDuplicate}
-          className="rounded-full border border-black/10 px-4 py-2 text-muted-foreground hover:text-foreground"
+          className="rounded-full border border-white/10 px-4 py-2 text-muted-foreground hover:text-foreground"
         >
           Duplicate
         </button>
@@ -356,7 +356,7 @@ function SettingsMenu({ secret }: { secret: string }) {
         Settings
       </button>
       {open && (
-        <div className="absolute right-0 top-12 z-40 w-80 rounded-2xl border border-black/10 bg-card p-4 shadow-2xl">
+        <div className="absolute right-0 top-12 z-40 w-80 rounded-2xl border border-white/10 bg-card p-4 shadow-2xl">
           <p className="text-[0.65rem] tracking-[0.3em] uppercase text-muted-foreground">
             Danger zone
           </p>
@@ -368,7 +368,7 @@ function SettingsMenu({ secret }: { secret: string }) {
               <p className="text-xs text-muted-foreground">
                 Save this URL now. It will not be shown again.
               </p>
-              <code className="block break-all rounded-lg bg-muted p-3 text-xs">{newUrl}</code>
+              <code className="block break-all rounded-lg bg-black/40 p-3 text-xs">{newUrl}</code>
               <button
                 onClick={() => {
                   navigator.clipboard.writeText(newUrl);
@@ -489,7 +489,7 @@ function Field({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         required={required}
-        className="mt-2 w-full rounded-xl border border-black/10 bg-black/[0.03] px-4 py-3 text-foreground outline-none focus:border-pine"
+        className="mt-2 w-full rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-foreground outline-none focus:border-pine"
       />
     </label>
   );
@@ -586,7 +586,7 @@ function GalleryManageView({
             if (!res.ok) alert(res.error ?? "Failed");
             else qc.invalidateQueries({ queryKey: ["manage-gallery", galleryId, secret] });
           }}
-          className="rounded-full border border-black/10 px-4 py-2 text-xs uppercase tracking-widest text-muted-foreground hover:text-foreground"
+          className="rounded-full border border-white/10 px-4 py-2 text-xs uppercase tracking-widest text-muted-foreground hover:text-foreground"
         >
           Change PIN
         </button>
@@ -605,7 +605,7 @@ function GalleryManageView({
         }}
         className={
           "mt-8 rounded-2xl border-2 border-dashed p-10 text-center transition " +
-          (dragOver ? "border-pine bg-pine/10" : "border-black/10 bg-black/[0.02]")
+          (dragOver ? "border-pine bg-pine/10" : "border-white/10 bg-white/[0.02]")
         }
       >
         <p className="font-heading text-xl">Drag & drop images</p>
@@ -629,7 +629,7 @@ function GalleryManageView({
 
       <div className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
         {data.images.map((img) => (
-          <div key={img.id} className="group relative aspect-square overflow-hidden rounded-xl bg-black/5">
+          <div key={img.id} className="group relative aspect-square overflow-hidden rounded-xl bg-white/5">
             {img.url && (
               <img
                 src={img.url}

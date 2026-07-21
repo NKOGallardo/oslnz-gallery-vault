@@ -141,7 +141,7 @@ function GalleryView() {
               <button
                 key={img.id}
                 onClick={() => setLightbox(idx)}
-                className="group relative aspect-[4/5] overflow-hidden rounded-xl bg-black/5"
+                className="group relative aspect-[4/5] overflow-hidden rounded-xl bg-white/5"
                 aria-label={`Open ${img.filename}`}
               >
                 {img.url && (
@@ -152,8 +152,8 @@ function GalleryView() {
                     className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]"
                   />
                 )}
-                <span className="pointer-events-none absolute inset-0 flex items-end justify-end bg-gradient-to-t from-black/30 via-transparent p-2 opacity-0 transition group-hover:opacity-100">
-                  <span className="rounded-full bg-black/60 px-3 py-1 text-[0.65rem] tracking-[0.25em] uppercase text-white">
+                <span className="pointer-events-none absolute inset-0 flex items-end justify-end bg-gradient-to-t from-black/40 via-transparent p-2 opacity-0 transition group-hover:opacity-100">
+                  <span className="rounded-full bg-black/50 px-3 py-1 text-[0.65rem] tracking-[0.25em] uppercase text-white">
                     OSLNZ
                   </span>
                 </span>

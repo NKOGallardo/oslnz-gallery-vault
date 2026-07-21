@@ -64,7 +64,7 @@ function ManageDashboard() {
             onClick={() => setView({ kind: "dashboard" })}
             className={
               "rounded-full px-4 py-2 transition " +
-              (view.kind === "dashboard" ? "bg-white/10 text-foreground" : "text-muted-foreground hover:text-foreground")
+              (view.kind === "dashboard" ? "bg-black/10 text-foreground" : "text-muted-foreground hover:text-foreground")
             }
           >
             Dashboard
@@ -132,7 +132,7 @@ function AccessDenied() {
 
 function StatCard({ label, value }: { label: string; value: number | string }) {
   return (
-    <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6">
+    <div className="rounded-2xl border border-black/10 bg-black/[0.03] p-6">
       <p className="text-xs tracking-[0.3em] uppercase text-muted-foreground">{label}</p>
       <p className="mt-3 font-heading text-4xl font-semibold">{value}</p>
     </div>
@@ -189,7 +189,7 @@ function DashboardView({
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search by client or PIN…"
-              className="w-64 rounded-full border border-white/10 bg-white/[0.03] px-4 py-2 text-sm outline-none focus:border-pine"
+              className="w-64 rounded-full border border-black/10 bg-black/[0.03] px-4 py-2 text-sm outline-none focus:border-pine"
             />
             <button
               onClick={onNew}
@@ -201,7 +201,7 @@ function DashboardView({
         </div>
 
         {filtered.length === 0 ? (
-          <div className="mt-8 rounded-2xl border border-dashed border-white/10 bg-white/[0.02] p-12 text-center text-muted-foreground">
+          <div className="mt-8 rounded-2xl border border-dashed border-black/10 bg-black/[0.02] p-12 text-center text-muted-foreground">
             No galleries yet. Create your first one to get started.
           </div>
         ) : (

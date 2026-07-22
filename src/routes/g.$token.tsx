@@ -4,6 +4,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useState, useCallback } from "react";
 import { getGalleryByToken, getImageDownloadUrl } from "@/lib/gallery.functions";
 import { OslnzLogo } from "@/components/OslnzLogo";
+import bgBronze from "@/assets/bg-bronze.jpeg.asset.json";
 
 export const Route = createFileRoute("/g/$token")({
   head: () => ({
@@ -87,7 +88,13 @@ function GalleryView() {
   }
 
   return (
-    <main className="min-h-screen bg-background text-foreground">
+    <main className="relative min-h-screen bg-background text-foreground">
+      <div
+        aria-hidden
+        className="pointer-events-none fixed inset-0 -z-10 bg-cover bg-center"
+        style={{ backgroundImage: `url(${bgBronze.url})` }}
+      />
+      <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 bg-black/75" />
       <header className="mx-auto flex max-w-6xl items-center justify-between px-6 pb-6 pt-10 sm:px-10">
         <OslnzLogo />
         <button
@@ -136,12 +143,25 @@ function GalleryView() {
             Your photographer hasn't added any photos yet.
           </p>
         ) : (
-          <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-3 lg:grid-cols-4">
-            {images.map((img, idx) => (
+          <div className="columns-2 gap-3 sm:columns-3 lg:columns-4 [column-fill:_balance]">
+            {images.map((img, idx) => {
+              const shapes = [
+                "aspect-[3/4]",
+                "aspect-[4/5]",
+                "aspect-square",
+                "aspect-[2/3]",
+                "aspect-[4/3]",
+                "aspect-[3/5]",
+                "aspect-[5/4]",
+              ];
+              const radii = ["rounded-xl", "rounded-2xl", "rounded-3xl", "rounded-[2rem]"];
+              const shape = shapes[idx % shapes.length];
+              const radius = radii[idx % radii.length];
+              return (
               <button
                 key={img.id}
                 onClick={() => setLightbox(idx)}
-                className="group relative aspect-[4/5] overflow-hidden rounded-xl bg-white/5"
+                className={`group relative mb-3 block w-full overflow-hidden bg-white/5 break-inside-avoid ${shape} ${radius}`}
                 aria-label={`Open ${img.filename}`}
               >
                 {img.url && (
@@ -158,10 +178,16 @@ function GalleryView() {
                   </span>
                 </span>
               </button>
-            ))}
+              );
+            })}
           </div>
         )}
       </section>
+
+      <footer className="pb-8 text-center text-xs text-muted-foreground/70 space-y-1">
+        <div>© {new Date().getFullYear()} OSLNZ. All galleries are private.</div>
+        <div className="tracking-[0.25em] uppercase">Made by NKO_Coding.codes</div>
+      </footer>
 
       {lightbox !== null && images[lightbox] && (
         <Lightbox

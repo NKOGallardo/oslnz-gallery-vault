@@ -77,7 +77,7 @@ function PinEntry() {
         className="absolute inset-0 -z-10 bg-cover bg-center"
         style={{ backgroundImage: `url(${bgFloral.url})` }}
       />
-      <div aria-hidden className="absolute inset-0 -z-10 bg-black/70" />
+      <div aria-hidden className="absolute inset-0 -z-10 bg-black/40" />
 
       <header className="mx-auto max-w-6xl px-8 pt-10">
         <div className="flex items-center justify-between">

@@ -94,7 +94,7 @@ function GalleryView() {
         className="pointer-events-none fixed inset-0 -z-10 bg-cover bg-center"
         style={{ backgroundImage: `url(${bgBronze.url})` }}
       />
-      <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 bg-black/75" />
+      <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 bg-black/45" />
       <header className="mx-auto flex max-w-6xl items-center justify-between px-6 pb-6 pt-10 sm:px-10">
         <OslnzLogo />
         <button

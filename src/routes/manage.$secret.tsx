@@ -16,6 +16,7 @@ import {
   deleteImage,
 } from "@/lib/photographer.functions";
 import QRCode from "qrcode";
+import bgFloral from "@/assets/bg-floral.jpeg.asset.json";
 
 export const Route = createFileRoute("/manage/$secret")({
   head: () => ({
@@ -56,7 +57,13 @@ function ManageDashboard() {
   const invalidate = () => qc.invalidateQueries({ queryKey: ["dashboard", secret] });
 
   return (
-    <main className="min-h-screen bg-background text-foreground">
+    <main className="relative min-h-screen bg-background text-foreground">
+      <div
+        aria-hidden
+        className="pointer-events-none fixed inset-0 -z-10 bg-cover bg-center"
+        style={{ backgroundImage: `url(${bgFloral.url})` }}
+      />
+      <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 bg-black/80" />
       <header className="mx-auto flex max-w-7xl items-center justify-between px-6 py-8 sm:px-10">
         <OslnzLogo />
         <nav className="flex items-center gap-2 text-xs tracking-[0.3em] uppercase">

@@ -4,6 +4,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { verifyPin } from "@/lib/gallery.functions";
 import { adminLogin } from "@/lib/photographer.functions";
 import { OslnzLogo } from "@/components/OslnzLogo";
+import bgFloral from "@/assets/bg-floral.jpeg.asset.json";
 
 export const Route = createFileRoute("/")({
   component: PinEntry,
@@ -73,12 +74,10 @@ function PinEntry() {
       {/* backdrop */}
       <div
         aria-hidden
-        className="absolute inset-0 -z-10 opacity-[0.35]"
-        style={{
-          background:
-            "radial-gradient(60% 45% at 50% 0%, oklch(0.42 0.06 155 / 0.35), transparent 60%), radial-gradient(50% 40% at 80% 100%, oklch(0.42 0.07 55 / 0.28), transparent 60%)",
-        }}
+        className="absolute inset-0 -z-10 bg-cover bg-center"
+        style={{ backgroundImage: `url(${bgFloral.url})` }}
       />
+      <div aria-hidden className="absolute inset-0 -z-10 bg-black/70" />
 
       <header className="mx-auto max-w-6xl px-8 pt-10">
         <div className="flex items-center justify-between">
@@ -147,8 +146,9 @@ function PinEntry() {
         </p>
       </section>
 
-      <footer className="pb-8 text-center text-xs text-muted-foreground/60">
-        © {new Date().getFullYear()} OSLNZ. All galleries are private.
+      <footer className="pb-8 text-center text-xs text-muted-foreground/60 space-y-1">
+        <div>© {new Date().getFullYear()} OSLNZ. All galleries are private.</div>
+        <div className="tracking-[0.25em] uppercase">Made by NKO_Coding.codes</div>
       </footer>
 
       {adminOpen && (

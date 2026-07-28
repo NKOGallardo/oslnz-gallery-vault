@@ -427,14 +427,14 @@ function CreateGalleryView({
   }
 
   return (
-    <section className="mx-auto max-w-2xl">
-      <p className="text-xs tracking-[0.3em] uppercase text-brown">New gallery</p>
-      <h2 className="font-heading text-4xl font-semibold">Create Gallery</h2>
-      <form onSubmit={submit} className="mt-8 space-y-4">
+    <section style={{ margin: "0 auto", maxWidth: "42rem" }}>
+      <p className="eyebrow">New gallery</p>
+      <h2 className="manage-head__title">Create Gallery</h2>
+      <form onSubmit={submit} className="form-stack" style={{ marginTop: "2rem" }}>
         <Field label="Client Name" value={clientName} onChange={setClientName} required />
         <Field label="Gallery Name" value={title} onChange={setTitle} required />
         <Field label="Event Name" value={eventName} onChange={setEventName} />
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div className="grid grid--two">
           <Field
             label="Gallery PIN (5 characters)"
             value={pin}
@@ -449,11 +449,11 @@ function CreateGalleryView({
           value={expiresAt}
           onChange={setExpiresAt}
         />
-        {error && <p className="text-sm text-destructive">{error}</p>}
+        {error && <p className="error-text">{error}</p>}
         <button
           type="submit"
           disabled={busy}
-          className="w-full rounded-2xl bg-pine py-4 text-sm font-semibold uppercase tracking-[0.3em] text-pine-foreground disabled:opacity-60"
+          className="btn btn--primary btn--block"
         >
           {busy ? "Creating…" : "Create Gallery"}
         </button>
@@ -476,16 +476,14 @@ function Field({
   required?: boolean;
 }) {
   return (
-    <label className="block">
-      <span className="text-[0.65rem] tracking-[0.3em] uppercase text-muted-foreground">
-        {label}
-      </span>
+    <label className="field">
+      <span className="field__label">{label}</span>
       <input
         type={type}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         required={required}
-        className="mt-2 w-full rounded-xl border border-black/10 bg-black/[0.03] px-4 py-3 text-foreground outline-none focus:border-pine"
+        className="input"
       />
     </label>
   );

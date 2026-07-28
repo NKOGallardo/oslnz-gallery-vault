@@ -64,8 +64,8 @@
   --color-brown: var(--brown);
   --color-brown-foreground: var(--brown-foreground);
   --font-display: "Poppins", ui-sans-serif, system-ui, sans-serif;
-  --font-heading: "Manrope", ui-sans-serif, system-ui, sans-serif;
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-heading: "Libre Baskerville", "Book Antiqua", "Palatino Linotype", Palatino, serif;
+  --font-sans: "Libre Baskerville", "Book Antiqua", "Palatino Linotype", Palatino, serif;
 }
 
 :root {

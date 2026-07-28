@@ -345,33 +345,31 @@ function SettingsMenu({ secret }: { secret: string }) {
   }
 
   return (
-    <div className="relative">
+    <div className="settings">
       <button
         onClick={() => setOpen((v) => !v)}
-        className="rounded-full px-4 py-2 text-muted-foreground hover:text-foreground"
+        className="tab"
       >
         Settings
       </button>
       {open && (
-        <div className="absolute right-0 top-12 z-40 w-80 rounded-2xl border border-black/10 bg-card p-4 shadow-2xl">
-          <p className="text-[0.65rem] tracking-[0.3em] uppercase text-muted-foreground">
-            Danger zone
-          </p>
-          <p className="mt-2 text-sm text-foreground">
+        <div className="settings__panel">
+          <p className="field__label">Danger zone</p>
+          <p style={{ marginTop: "0.5rem", fontSize: "0.875rem" }}>
             Rotate your private management URL. The previous URL becomes unusable.
           </p>
           {newUrl ? (
-            <div className="mt-4 space-y-3">
-              <p className="text-xs text-muted-foreground">
+            <div className="stack" style={{ marginTop: "1rem" }}>
+              <p className="muted" style={{ fontSize: "0.75rem" }}>
                 Save this URL now. It will not be shown again.
               </p>
-              <code className="block break-all rounded-lg bg-black/5 p-3 text-xs">{newUrl}</code>
+              <code>{newUrl}</code>
               <button
                 onClick={() => {
                   navigator.clipboard.writeText(newUrl);
                   window.location.href = newUrl;
                 }}
-                className="w-full rounded-full bg-pine py-2 text-sm font-semibold text-pine-foreground"
+                className="btn btn--primary btn--pill btn--block"
               >
                 Copy & open
               </button>
@@ -379,7 +377,8 @@ function SettingsMenu({ secret }: { secret: string }) {
           ) : (
             <button
               onClick={doRotate}
-              className="mt-4 w-full rounded-full border border-destructive/40 py-2 text-sm text-destructive hover:bg-destructive/10"
+              className="btn btn--danger btn--pill btn--block"
+              style={{ marginTop: "1rem" }}
             >
               Generate New Secret URL
             </button>

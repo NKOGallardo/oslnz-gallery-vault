@@ -44,8 +44,8 @@ function ManageDashboard() {
 
   if (isLoading) {
     return (
-      <div className="flex min-h-screen items-center justify-center text-muted-foreground">
-        <p className="text-sm tracking-[0.3em] uppercase">Loading…</p>
+      <div className="center-screen muted">
+        <p className="kicker">Loading…</p>
       </div>
     );
   }
@@ -57,39 +57,35 @@ function ManageDashboard() {
   const invalidate = () => qc.invalidateQueries({ queryKey: ["dashboard", secret] });
 
   return (
-    <main className="relative min-h-screen bg-background text-foreground">
+    <main className="page">
       <div
         aria-hidden
-        className="pointer-events-none fixed inset-0 -z-10 bg-cover bg-center"
+        className="page__bg"
         style={{ backgroundImage: `url(${bgFloral.url})` }}
       />
-      <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 bg-white/85" />
-      <header className="mx-auto flex max-w-7xl items-center justify-between px-6 py-8 sm:px-10">
-        <OslnzLogo />
-        <nav className="flex items-center gap-2 text-xs tracking-[0.3em] uppercase">
-          <button
-            onClick={() => setView({ kind: "dashboard" })}
-            className={
-              "rounded-full px-4 py-2 transition " +
-              (view.kind === "dashboard" ? "bg-black/10 text-foreground" : "text-muted-foreground hover:text-foreground")
-            }
-          >
-            Dashboard
-          </button>
-          <button
-            onClick={() => setView({ kind: "create" })}
-            className={
-              "rounded-full px-4 py-2 transition " +
-              (view.kind === "create" ? "bg-pine text-pine-foreground" : "text-muted-foreground hover:text-foreground")
-            }
-          >
-            + New Gallery
-          </button>
-          <SettingsMenu secret={secret} />
-        </nav>
+      <div aria-hidden className="page__veil" />
+      <header className="shell shell--lg">
+        <div className="topbar">
+          <OslnzLogo />
+          <nav className="admin-nav">
+            <button
+              onClick={() => setView({ kind: "dashboard" })}
+              className={"tab" + (view.kind === "dashboard" ? " is-active" : "")}
+            >
+              Dashboard
+            </button>
+            <button
+              onClick={() => setView({ kind: "create" })}
+              className={"tab" + (view.kind === "create" ? " is-active-primary" : "")}
+            >
+              + New Gallery
+            </button>
+            <SettingsMenu secret={secret} />
+          </nav>
+        </div>
       </header>
 
-      <div className="mx-auto max-w-7xl px-6 pb-24 sm:px-10">
+      <div className="shell shell--lg" style={{ paddingBottom: "6rem" }}>
         {view.kind === "dashboard" && (
           <DashboardView
             data={data}
@@ -127,10 +123,10 @@ function ManageDashboard() {
 
 function AccessDenied() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center gap-6 px-6 text-center">
-      <h1 className="font-heading text-7xl font-semibold">404</h1>
-      <p className="text-muted-foreground">Page not found.</p>
-      <Link to="/" className="text-xs tracking-[0.3em] uppercase text-pine hover:text-foreground">
+    <main className="center-screen">
+      <h1 className="notfound__code">404</h1>
+      <p className="muted">Page not found.</p>
+      <Link to="/" className="link-action">
         Go home
       </Link>
     </main>
@@ -139,9 +135,9 @@ function AccessDenied() {
 
 function StatCard({ label, value }: { label: string; value: number | string }) {
   return (
-    <div className="rounded-2xl border border-black/10 bg-black/[0.03] p-6">
-      <p className="text-xs tracking-[0.3em] uppercase text-muted-foreground">{label}</p>
-      <p className="mt-3 font-heading text-4xl font-semibold">{value}</p>
+    <div className="panel">
+      <p className="stat__label">{label}</p>
+      <p className="stat__value">{value}</p>
     </div>
   );
 }

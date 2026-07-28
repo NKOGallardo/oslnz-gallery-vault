@@ -175,40 +175,37 @@ function DashboardView({
 
   return (
     <>
-      <section className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+      <section className="grid grid--stats">
         <StatCard label="Total Galleries" value={data.stats.totalGalleries} />
         <StatCard label="Total Photos" value={data.stats.totalImages} />
         <StatCard label="Total Downloads" value={data.stats.totalDownloads} />
       </section>
 
-      <section className="mt-12">
-        <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
+      <section className="section">
+        <div className="section__head">
           <div>
-            <p className="text-xs tracking-[0.3em] uppercase text-brown">Manage</p>
-            <h2 className="font-heading text-3xl font-semibold">Your Galleries</h2>
+            <p className="eyebrow">Manage</p>
+            <h2 className="section__title">Your Galleries</h2>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="section__tools">
             <input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search by client or PIN…"
-              className="w-64 rounded-full border border-black/10 bg-black/[0.03] px-4 py-2 text-sm outline-none focus:border-pine"
+              className="input input--pill input--search"
             />
-            <button
-              onClick={onNew}
-              className="rounded-full bg-pine px-5 py-2 text-sm font-semibold text-pine-foreground"
-            >
+            <button onClick={onNew} className="btn btn--primary btn--pill">
               Create Gallery
             </button>
           </div>
         </div>
 
         {filtered.length === 0 ? (
-          <div className="mt-8 rounded-2xl border border-dashed border-black/10 bg-black/[0.02] p-12 text-center text-muted-foreground">
+          <div className="panel panel--dashed" style={{ marginTop: "2rem" }}>
             No galleries yet. Create your first one to get started.
           </div>
         ) : (
-          <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid--cards">
             {filtered.map((g) => (
               <GalleryCard
                 key={g.id}

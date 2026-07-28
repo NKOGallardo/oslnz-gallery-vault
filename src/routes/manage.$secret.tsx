@@ -63,6 +63,7 @@ function ManageDashboard() {
         className="pointer-events-none fixed inset-0 -z-10 bg-cover bg-center"
         style={{ backgroundImage: `url(${bgFloral.url})` }}
       />
+      <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 bg-white/85" />
       <header className="mx-auto flex max-w-7xl items-center justify-between px-6 py-8 sm:px-10">
         <OslnzLogo />
         <nav className="flex items-center gap-2 text-xs tracking-[0.3em] uppercase">

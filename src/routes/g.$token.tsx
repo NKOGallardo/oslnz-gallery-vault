@@ -66,21 +66,18 @@ function GalleryView() {
 
   if (isLoading) {
     return (
-      <div className="flex min-h-screen items-center justify-center text-muted-foreground">
-        <p className="text-sm tracking-[0.3em] uppercase">Loading…</p>
+      <div className="center-screen muted">
+        <p className="kicker">Loading…</p>
       </div>
     );
   }
 
   if (!data?.ok) {
     return (
-      <main className="flex min-h-screen flex-col items-center justify-center gap-6 px-6 text-center">
+      <main className="center-screen">
         <OslnzLogo />
-        <p className="text-lg text-muted-foreground">{data?.error ?? "Gallery not available."}</p>
-        <Link
-          to="/"
-          className="rounded-2xl bg-pine px-6 py-3 text-sm font-semibold text-pine-foreground"
-        >
+        <p className="lede">{data?.error ?? "Gallery not available."}</p>
+        <Link to="/" className="btn btn--primary">
           Enter PIN again
         </Link>
       </main>
@@ -88,31 +85,26 @@ function GalleryView() {
   }
 
   return (
-    <main className="relative min-h-screen bg-background text-foreground">
+    <main className="page">
       <div
         aria-hidden
-        className="pointer-events-none fixed inset-0 -z-10 bg-cover bg-center"
+        className="page__bg"
         style={{ backgroundImage: `url(${bgBronze.url})` }}
       />
-      <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 bg-white/85" />
-      <header className="mx-auto flex max-w-6xl items-center justify-between px-6 pb-6 pt-10 sm:px-10">
-        <OslnzLogo />
-        <button
-          onClick={() => navigate({ to: "/" })}
-          className="text-xs tracking-[0.3em] uppercase text-muted-foreground hover:text-foreground"
-        >
-          Exit
-        </button>
+      <div aria-hidden className="page__veil" />
+      <header className="shell shell--md">
+        <div className="topbar">
+          <OslnzLogo />
+          <button onClick={() => navigate({ to: "/" })} className="btn--linklike">
+            Exit
+          </button>
+        </div>
       </header>
 
-      <section className="mx-auto max-w-6xl px-6 pb-8 sm:px-10">
-        <p className="text-xs tracking-[0.4em] uppercase text-brown">
-          {gallery!.clientName}
-        </p>
-        <h1 className="mt-3 font-heading text-4xl font-semibold sm:text-5xl">
-          {gallery!.title}
-        </h1>
-        <div className="mt-3 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-muted-foreground">
+      <section className="shell shell--md gallery-head">
+        <p className="eyebrow">{gallery!.clientName}</p>
+        <h1 className="gallery-head__title">{gallery!.title}</h1>
+        <div className="gallery-head__meta">
           {gallery!.eventName && <span>{gallery!.eventName}</span>}
           {gallery!.eventDate && (
             <span>
@@ -126,42 +118,29 @@ function GalleryView() {
           <span>{images.length} {images.length === 1 ? "image" : "images"}</span>
         </div>
         {images.length > 0 && (
-          <div className="mt-6">
-            <button
-              onClick={downloadAll}
-              className="rounded-2xl border border-pine bg-pine/10 px-6 py-3 text-sm font-semibold text-foreground transition hover:bg-pine/20"
-            >
+          <div className="gallery-head__actions">
+            <button onClick={downloadAll} className="btn btn--pine-soft">
               Download entire gallery
             </button>
           </div>
         )}
       </section>
 
-      <section className="mx-auto max-w-7xl px-4 pb-24 sm:px-8">
+      <section className="shell shell--lg" style={{ paddingBottom: "6rem" }}>
         {images.length === 0 ? (
-          <p className="py-24 text-center text-muted-foreground">
+          <p className="muted" style={{ padding: "6rem 0", textAlign: "center" }}>
             Your photographer hasn't added any photos yet.
           </p>
         ) : (
-          <div className="columns-2 gap-3 sm:columns-3 lg:columns-4 [column-fill:_balance]">
+          <div className="masonry">
             {images.map((img, idx) => {
-              const shapes = [
-                "aspect-[3/4]",
-                "aspect-[4/5]",
-                "aspect-square",
-                "aspect-[2/3]",
-                "aspect-[4/3]",
-                "aspect-[3/5]",
-                "aspect-[5/4]",
-              ];
-              const radii = ["rounded-xl", "rounded-2xl", "rounded-3xl", "rounded-[2rem]"];
-              const shape = shapes[idx % shapes.length];
-              const radius = radii[idx % radii.length];
+              const shape = `shape-${idx % 7}`;
+              const radius = `radius-${idx % 4}`;
               return (
               <button
                 key={img.id}
                 onClick={() => setLightbox(idx)}
-                className={`group relative mb-3 block w-full overflow-hidden bg-black/5 break-inside-avoid ${shape} ${radius}`}
+                className={`masonry__item ${shape} ${radius}`}
                 aria-label={`Open ${img.filename}`}
               >
                 {img.url && (
@@ -169,13 +148,10 @@ function GalleryView() {
                     src={img.url}
                     alt={img.filename}
                     loading="lazy"
-                    className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]"
                   />
                 )}
-                <span className="pointer-events-none absolute inset-0 flex items-end justify-end bg-gradient-to-t from-black/40 via-transparent p-2 opacity-0 transition group-hover:opacity-100">
-                  <span className="rounded-full bg-black/50 px-3 py-1 text-[0.65rem] tracking-[0.25em] uppercase text-white">
-                    OSLNZ
-                  </span>
+                <span className="masonry__badge">
+                  <span>OSLNZ</span>
                 </span>
               </button>
               );
@@ -184,9 +160,9 @@ function GalleryView() {
         )}
       </section>
 
-      <footer className="pb-8 text-center text-xs text-muted-foreground/70 space-y-1">
+      <footer className="site-footer">
         <div>© {new Date().getFullYear()} OSLNZ. All galleries are private.</div>
-        <div className="tracking-[0.25em] uppercase">Made by NKO_Coding.codes</div>
+        <div className="kicker">Made by NKO_Coding.codes</div>
       </footer>
 
       {lightbox !== null && images[lightbox] && (
@@ -229,20 +205,20 @@ function Lightbox({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex flex-col bg-white/95 backdrop-blur"
+      className="lightbox"
       role="dialog"
       aria-modal
     >
-      <div className="flex items-center justify-between px-6 py-4 text-xs tracking-[0.3em] uppercase text-foreground/70">
+      <div className="lightbox__bar">
         <span>{index + 1} / {total}</span>
-        <div className="flex items-center gap-4">
-          <button onClick={onDownload} className="hover:text-foreground">Download</button>
-          <button onClick={onClose} className="hover:text-foreground">Close ✕</button>
+        <div className="row">
+          <button onClick={onDownload}>Download</button>
+          <button onClick={onClose}>Close ✕</button>
         </div>
       </div>
 
       <div
-        className="relative flex flex-1 items-center justify-center overflow-hidden px-4"
+        className="lightbox__stage"
         onTouchStart={(e) => setTouchX(e.touches[0]!.clientX)}
         onTouchEnd={(e) => {
           if (touchX === null) return;
@@ -257,23 +233,20 @@ function Lightbox({
             src={image.url}
             alt={image.filename}
             onClick={() => setZoom((z) => !z)}
-            className={
-              "max-h-full max-w-full cursor-zoom-in select-none transition-transform duration-300 " +
-              (zoom ? "scale-150 cursor-zoom-out" : "")
-            }
+            className={"lightbox__img" + (zoom ? " is-zoomed" : "")}
           />
         )}
 
         <button
           onClick={onPrev}
-          className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full bg-black/10 p-3 text-foreground transition hover:bg-black/20"
+          className="lightbox__nav lightbox__nav--prev"
           aria-label="Previous"
         >
           ‹
         </button>
         <button
           onClick={onNext}
-          className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full bg-black/10 p-3 text-foreground transition hover:bg-black/20"
+          className="lightbox__nav lightbox__nav--next"
           aria-label="Next"
         >
           ›

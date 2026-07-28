@@ -44,8 +44,8 @@ function ManageDashboard() {
 
   if (isLoading) {
     return (
-      <div className="flex min-h-screen items-center justify-center text-muted-foreground">
-        <p className="text-sm tracking-[0.3em] uppercase">Loading…</p>
+      <div className="center-screen muted">
+        <p className="kicker">Loading…</p>
       </div>
     );
   }
@@ -57,39 +57,35 @@ function ManageDashboard() {
   const invalidate = () => qc.invalidateQueries({ queryKey: ["dashboard", secret] });
 
   return (
-    <main className="relative min-h-screen bg-background text-foreground">
+    <main className="page">
       <div
         aria-hidden
-        className="pointer-events-none fixed inset-0 -z-10 bg-cover bg-center"
+        className="page__bg"
         style={{ backgroundImage: `url(${bgFloral.url})` }}
       />
-      <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 bg-white/85" />
-      <header className="mx-auto flex max-w-7xl items-center justify-between px-6 py-8 sm:px-10">
-        <OslnzLogo />
-        <nav className="flex items-center gap-2 text-xs tracking-[0.3em] uppercase">
-          <button
-            onClick={() => setView({ kind: "dashboard" })}
-            className={
-              "rounded-full px-4 py-2 transition " +
-              (view.kind === "dashboard" ? "bg-black/10 text-foreground" : "text-muted-foreground hover:text-foreground")
-            }
-          >
-            Dashboard
-          </button>
-          <button
-            onClick={() => setView({ kind: "create" })}
-            className={
-              "rounded-full px-4 py-2 transition " +
-              (view.kind === "create" ? "bg-pine text-pine-foreground" : "text-muted-foreground hover:text-foreground")
-            }
-          >
-            + New Gallery
-          </button>
-          <SettingsMenu secret={secret} />
-        </nav>
+      <div aria-hidden className="page__veil" />
+      <header className="shell shell--lg">
+        <div className="topbar">
+          <OslnzLogo />
+          <nav className="admin-nav">
+            <button
+              onClick={() => setView({ kind: "dashboard" })}
+              className={"tab" + (view.kind === "dashboard" ? " is-active" : "")}
+            >
+              Dashboard
+            </button>
+            <button
+              onClick={() => setView({ kind: "create" })}
+              className={"tab" + (view.kind === "create" ? " is-active-primary" : "")}
+            >
+              + New Gallery
+            </button>
+            <SettingsMenu secret={secret} />
+          </nav>
+        </div>
       </header>
 
-      <div className="mx-auto max-w-7xl px-6 pb-24 sm:px-10">
+      <div className="shell shell--lg" style={{ paddingBottom: "6rem" }}>
         {view.kind === "dashboard" && (
           <DashboardView
             data={data}
@@ -127,10 +123,10 @@ function ManageDashboard() {
 
 function AccessDenied() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center gap-6 px-6 text-center">
-      <h1 className="font-heading text-7xl font-semibold">404</h1>
-      <p className="text-muted-foreground">Page not found.</p>
-      <Link to="/" className="text-xs tracking-[0.3em] uppercase text-pine hover:text-foreground">
+    <main className="center-screen">
+      <h1 className="notfound__code">404</h1>
+      <p className="muted">Page not found.</p>
+      <Link to="/" className="link-action">
         Go home
       </Link>
     </main>
@@ -139,9 +135,9 @@ function AccessDenied() {
 
 function StatCard({ label, value }: { label: string; value: number | string }) {
   return (
-    <div className="rounded-2xl border border-black/10 bg-black/[0.03] p-6">
-      <p className="text-xs tracking-[0.3em] uppercase text-muted-foreground">{label}</p>
-      <p className="mt-3 font-heading text-4xl font-semibold">{value}</p>
+    <div className="panel">
+      <p className="stat__label">{label}</p>
+      <p className="stat__value">{value}</p>
     </div>
   );
 }
@@ -179,40 +175,37 @@ function DashboardView({
 
   return (
     <>
-      <section className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+      <section className="grid grid--stats">
         <StatCard label="Total Galleries" value={data.stats.totalGalleries} />
         <StatCard label="Total Photos" value={data.stats.totalImages} />
         <StatCard label="Total Downloads" value={data.stats.totalDownloads} />
       </section>
 
-      <section className="mt-12">
-        <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
+      <section className="section">
+        <div className="section__head">
           <div>
-            <p className="text-xs tracking-[0.3em] uppercase text-brown">Manage</p>
-            <h2 className="font-heading text-3xl font-semibold">Your Galleries</h2>
+            <p className="eyebrow">Manage</p>
+            <h2 className="section__title">Your Galleries</h2>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="section__tools">
             <input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search by client or PIN…"
-              className="w-64 rounded-full border border-black/10 bg-black/[0.03] px-4 py-2 text-sm outline-none focus:border-pine"
+              className="input input--pill input--search"
             />
-            <button
-              onClick={onNew}
-              className="rounded-full bg-pine px-5 py-2 text-sm font-semibold text-pine-foreground"
-            >
+            <button onClick={onNew} className="btn btn--primary btn--pill">
               Create Gallery
             </button>
           </div>
         </div>
 
         {filtered.length === 0 ? (
-          <div className="mt-8 rounded-2xl border border-dashed border-black/10 bg-black/[0.02] p-12 text-center text-muted-foreground">
+          <div className="panel panel--dashed" style={{ marginTop: "2rem" }}>
             No galleries yet. Create your first one to get started.
           </div>
         ) : (
-          <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid--cards">
             {filtered.map((g) => (
               <GalleryCard
                 key={g.id}
@@ -262,11 +255,11 @@ function GalleryCard({
   const link = typeof window !== "undefined" ? `${window.location.origin}/?pin=${gallery.pin}` : "";
 
   return (
-    <div className="group flex flex-col gap-4 rounded-2xl border border-black/10 bg-black/[0.03] p-5 transition hover:border-pine/60">
+    <div className="panel gallery-card">
       <div>
-        <p className="text-[0.65rem] tracking-[0.3em] uppercase text-brown">{gallery.client_name}</p>
-        <h3 className="mt-1 font-heading text-xl font-semibold">{gallery.title}</h3>
-        <div className="mt-3 flex items-center gap-3 text-xs text-muted-foreground">
+        <p className="gallery-card__client">{gallery.client_name}</p>
+        <h3 className="gallery-card__title">{gallery.title}</h3>
+        <div className="gallery-card__meta">
           <span>{gallery.image_count} photos</span>
           <span>·</span>
           <span>{new Date(gallery.created_at).toLocaleDateString()}</span>
@@ -279,32 +272,29 @@ function GalleryCard({
         </div>
       </div>
 
-      <div className="flex items-center justify-between rounded-xl bg-black/5 px-3 py-2 font-mono text-sm">
-        <span className="tracking-[0.2em]">PIN: {gallery.pin}</span>
+      <div className="gallery-card__pin">
+        <span>PIN: {gallery.pin}</span>
         <button
           onClick={() => navigator.clipboard.writeText(gallery.pin)}
-          className="text-xs uppercase tracking-widest text-pine hover:text-foreground"
+          className="link-action"
         >
           Copy
         </button>
       </div>
 
       {qr && (
-        <div className="flex justify-center rounded-xl bg-white p-3">
-          <img src={qr} alt="QR" className="h-40 w-40" />
+        <div className="gallery-card__qr">
+          <img src={qr} alt="QR" />
         </div>
       )}
 
-      <div className="flex flex-wrap gap-2 text-xs">
-        <button
-          onClick={onOpen}
-          className="rounded-full bg-pine px-4 py-2 font-semibold text-pine-foreground"
-        >
+      <div className="gallery-card__actions">
+        <button onClick={onOpen} className="btn btn--primary btn--pill">
           Open
         </button>
         <button
           onClick={() => navigator.clipboard.writeText(link)}
-          className="rounded-full border border-black/10 px-4 py-2 text-muted-foreground hover:text-foreground"
+          className="btn btn--outline btn--pill"
         >
           Copy Link
         </button>
@@ -314,19 +304,19 @@ function GalleryCard({
             const dataUrl = await QRCode.toDataURL(link, { margin: 1, width: 320 });
             setQr(dataUrl);
           }}
-          className="rounded-full border border-black/10 px-4 py-2 text-muted-foreground hover:text-foreground"
+          className="btn btn--outline btn--pill"
         >
           {qr ? "Hide QR" : "QR"}
         </button>
         <button
           onClick={onDuplicate}
-          className="rounded-full border border-black/10 px-4 py-2 text-muted-foreground hover:text-foreground"
+          className="btn btn--outline btn--pill"
         >
           Duplicate
         </button>
         <button
           onClick={onDelete}
-          className="rounded-full border border-destructive/40 px-4 py-2 text-destructive hover:bg-destructive/10"
+          className="btn btn--danger btn--pill"
         >
           Delete
         </button>
@@ -355,33 +345,31 @@ function SettingsMenu({ secret }: { secret: string }) {
   }
 
   return (
-    <div className="relative">
+    <div className="settings">
       <button
         onClick={() => setOpen((v) => !v)}
-        className="rounded-full px-4 py-2 text-muted-foreground hover:text-foreground"
+        className="tab"
       >
         Settings
       </button>
       {open && (
-        <div className="absolute right-0 top-12 z-40 w-80 rounded-2xl border border-black/10 bg-card p-4 shadow-2xl">
-          <p className="text-[0.65rem] tracking-[0.3em] uppercase text-muted-foreground">
-            Danger zone
-          </p>
-          <p className="mt-2 text-sm text-foreground">
+        <div className="settings__panel">
+          <p className="field__label">Danger zone</p>
+          <p style={{ marginTop: "0.5rem", fontSize: "0.875rem" }}>
             Rotate your private management URL. The previous URL becomes unusable.
           </p>
           {newUrl ? (
-            <div className="mt-4 space-y-3">
-              <p className="text-xs text-muted-foreground">
+            <div className="stack" style={{ marginTop: "1rem" }}>
+              <p className="muted" style={{ fontSize: "0.75rem" }}>
                 Save this URL now. It will not be shown again.
               </p>
-              <code className="block break-all rounded-lg bg-black/5 p-3 text-xs">{newUrl}</code>
+              <code>{newUrl}</code>
               <button
                 onClick={() => {
                   navigator.clipboard.writeText(newUrl);
                   window.location.href = newUrl;
                 }}
-                className="w-full rounded-full bg-pine py-2 text-sm font-semibold text-pine-foreground"
+                className="btn btn--primary btn--pill btn--block"
               >
                 Copy & open
               </button>
@@ -389,7 +377,8 @@ function SettingsMenu({ secret }: { secret: string }) {
           ) : (
             <button
               onClick={doRotate}
-              className="mt-4 w-full rounded-full border border-destructive/40 py-2 text-sm text-destructive hover:bg-destructive/10"
+              className="btn btn--danger btn--pill btn--block"
+              style={{ marginTop: "1rem" }}
             >
               Generate New Secret URL
             </button>
@@ -438,14 +427,14 @@ function CreateGalleryView({
   }
 
   return (
-    <section className="mx-auto max-w-2xl">
-      <p className="text-xs tracking-[0.3em] uppercase text-brown">New gallery</p>
-      <h2 className="font-heading text-4xl font-semibold">Create Gallery</h2>
-      <form onSubmit={submit} className="mt-8 space-y-4">
+    <section style={{ margin: "0 auto", maxWidth: "42rem" }}>
+      <p className="eyebrow">New gallery</p>
+      <h2 className="manage-head__title">Create Gallery</h2>
+      <form onSubmit={submit} className="form-stack" style={{ marginTop: "2rem" }}>
         <Field label="Client Name" value={clientName} onChange={setClientName} required />
         <Field label="Gallery Name" value={title} onChange={setTitle} required />
         <Field label="Event Name" value={eventName} onChange={setEventName} />
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div className="grid grid--two">
           <Field
             label="Gallery PIN (5 characters)"
             value={pin}
@@ -460,11 +449,11 @@ function CreateGalleryView({
           value={expiresAt}
           onChange={setExpiresAt}
         />
-        {error && <p className="text-sm text-destructive">{error}</p>}
+        {error && <p className="error-text">{error}</p>}
         <button
           type="submit"
           disabled={busy}
-          className="w-full rounded-2xl bg-pine py-4 text-sm font-semibold uppercase tracking-[0.3em] text-pine-foreground disabled:opacity-60"
+          className="btn btn--primary btn--block"
         >
           {busy ? "Creating…" : "Create Gallery"}
         </button>
@@ -487,16 +476,14 @@ function Field({
   required?: boolean;
 }) {
   return (
-    <label className="block">
-      <span className="text-[0.65rem] tracking-[0.3em] uppercase text-muted-foreground">
-        {label}
-      </span>
+    <label className="field">
+      <span className="field__label">{label}</span>
       <input
         type={type}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         required={required}
-        className="mt-2 w-full rounded-xl border border-black/10 bg-black/[0.03] px-4 py-3 text-foreground outline-none focus:border-pine"
+        className="input"
       />
     </label>
   );
@@ -559,10 +546,10 @@ function GalleryManageView({
   }
 
   if (isLoading) {
-    return <p className="pt-12 text-center text-muted-foreground">Loading gallery…</p>;
+    return <p className="muted" style={{ paddingTop: "3rem", textAlign: "center" }}>Loading gallery…</p>;
   }
   if (!data?.ok) {
-    return <p className="pt-12 text-center text-muted-foreground">Gallery not found.</p>;
+    return <p className="muted" style={{ paddingTop: "3rem", textAlign: "center" }}>Gallery not found.</p>;
   }
 
   const g = data.gallery;
@@ -571,17 +558,17 @@ function GalleryManageView({
     <section>
       <button
         onClick={onBack}
-        className="mb-8 text-xs tracking-[0.3em] uppercase text-muted-foreground hover:text-foreground"
+        className="btn--linklike back-link"
       >
         ← Back to dashboard
       </button>
 
-      <div className="flex flex-wrap items-end justify-between gap-6">
+      <div className="manage-head">
         <div>
-          <p className="text-xs tracking-[0.3em] uppercase text-brown">{g.client_name}</p>
-          <h2 className="mt-2 font-heading text-4xl font-semibold">{g.title}</h2>
-          <p className="mt-2 text-sm text-muted-foreground">
-            PIN <span className="font-mono">{g.pin}</span> · {data.images.length} photos
+          <p className="eyebrow">{g.client_name}</p>
+          <h2 className="manage-head__title">{g.title}</h2>
+          <p className="muted" style={{ marginTop: "0.5rem", fontSize: "0.875rem" }}>
+            PIN <span className="mono">{g.pin}</span> · {data.images.length} photos
             {g.expires_at && <> · expires {new Date(g.expires_at).toLocaleString()}</>}
           </p>
         </div>
@@ -593,7 +580,7 @@ function GalleryManageView({
             if (!res.ok) alert(res.error ?? "Failed");
             else qc.invalidateQueries({ queryKey: ["manage-gallery", galleryId, secret] });
           }}
-          className="rounded-full border border-black/10 px-4 py-2 text-xs uppercase tracking-widest text-muted-foreground hover:text-foreground"
+          className="btn btn--outline btn--pill"
         >
           Change PIN
         </button>
@@ -610,39 +597,34 @@ function GalleryManageView({
           setDragOver(false);
           uploadFiles(Array.from(e.dataTransfer.files));
         }}
-        className={
-          "mt-8 rounded-2xl border-2 border-dashed p-10 text-center transition " +
-          (dragOver ? "border-pine bg-pine/10" : "border-black/10 bg-black/[0.02]")
-        }
+        className={"dropzone" + (dragOver ? " is-over" : "")}
       >
-        <p className="font-heading text-xl">Drag & drop images</p>
-        <p className="mt-1 text-sm text-muted-foreground">JPEG, PNG, or WEBP</p>
-        <label className="mt-4 inline-block cursor-pointer rounded-full bg-pine px-5 py-2 text-sm font-semibold text-pine-foreground">
+        <p className="dropzone__title">Drag &amp; drop images</p>
+        <p className="dropzone__hint">JPEG, PNG, or WEBP</p>
+        <label className="dropzone__picker">
           Choose files
           <input
             type="file"
             accept="image/jpeg,image/png,image/webp"
             multiple
-            className="hidden"
             onChange={(e) => e.target.files && uploadFiles(Array.from(e.target.files))}
           />
         </label>
         {uploading && (
-          <p className="mt-4 text-sm text-muted-foreground">
+          <p className="dropzone__hint" style={{ marginTop: "1rem" }}>
             Uploading {uploading.done} / {uploading.total}…
           </p>
         )}
       </div>
 
-      <div className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+      <div className="grid grid--thumbs">
         {data.images.map((img) => (
-          <div key={img.id} className="group relative aspect-square overflow-hidden rounded-xl bg-black/5">
+          <div key={img.id} className="thumb">
             {img.url && (
               <img
                 src={img.url}
                 alt={img.original_filename}
                 loading="lazy"
-                className="h-full w-full object-cover"
               />
             )}
             <button
@@ -652,7 +634,7 @@ function GalleryManageView({
                 qc.invalidateQueries({ queryKey: ["manage-gallery", galleryId, secret] });
                 qc.invalidateQueries({ queryKey: ["dashboard", secret] });
               }}
-              className="absolute right-2 top-2 rounded-full bg-black/60 px-2 py-1 text-[0.65rem] uppercase tracking-widest text-white opacity-0 transition group-hover:opacity-100"
+              className="thumb__delete"
             >
               Delete
             </button>

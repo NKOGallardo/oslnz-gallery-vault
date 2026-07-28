@@ -70,17 +70,17 @@ function PinEntry() {
   }
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-background text-foreground">
+    <main className="page page--clip">
       {/* backdrop */}
       <div
         aria-hidden
-        className="absolute inset-0 -z-10 bg-cover bg-center"
+        className="page__bg"
         style={{ backgroundImage: `url(${bgFloral.url})` }}
       />
-      <div aria-hidden className="absolute inset-0 -z-10 bg-white/85" />
+      <div aria-hidden className="page__veil" />
 
-      <header className="mx-auto max-w-6xl px-8 pt-10">
-        <div className="flex items-center justify-between">
+      <header className="shell shell--md">
+        <div className="topbar">
           <OslnzLogo />
           <button
             type="button"
@@ -89,26 +89,24 @@ function PinEntry() {
               setAdminError(null);
               setAdminCode("");
             }}
-            className="rounded-full border border-black/10 bg-black/[0.03] px-4 py-2 text-xs tracking-[0.25em] uppercase text-muted-foreground transition hover:border-pine hover:text-foreground"
+            className="btn btn--outline btn--pill"
           >
             Admin Login
           </button>
         </div>
       </header>
 
-      <section className="mx-auto flex min-h-[calc(100vh-6rem)] max-w-2xl flex-col items-center justify-center px-6 pb-24 text-center">
-        <p className="mb-6 text-xs tracking-[0.4em] uppercase text-brown">
-          Private Client Access
-        </p>
-        <h1 className="font-heading text-5xl font-semibold leading-tight sm:text-6xl">
-          Welcome to the <span className="text-pine">OSLNZ</span> Client Gallery
+      <section className="hero">
+        <p className="eyebrow">Private Client Access</p>
+        <h1 className="hero__title">
+          Welcome to the <span className="accent">OSLNZ</span> Client Gallery
         </h1>
-        <p className="mt-6 max-w-md text-base text-muted-foreground leading-relaxed">
+        <p className="hero__copy">
           Enter the private gallery PIN provided by your photographer to securely
           access your photos.
         </p>
 
-        <form onSubmit={onSubmit} className="mt-12 w-full max-w-sm">
+        <form onSubmit={onSubmit} className="hero__form">
           <label htmlFor="pin" className="sr-only">
             Gallery PIN
           </label>
@@ -125,35 +123,33 @@ function PinEntry() {
             }}
             placeholder="Enter your 5-character PIN"
             maxLength={5}
-            className="w-full rounded-2xl border border-black/10 bg-black/[0.03] px-6 py-5 text-center text-2xl tracking-[0.35em] font-display font-medium uppercase text-foreground outline-none placeholder:tracking-[0.2em] placeholder:normal-case placeholder:text-muted-foreground/60 focus:border-pine focus:bg-black/[0.06]"
+            className="input pin-input"
           />
           <button
             type="submit"
             disabled={loading || !pin.trim()}
-            className="mt-5 w-full rounded-2xl bg-pine px-6 py-5 text-base font-semibold tracking-wide text-pine-foreground shadow-lg shadow-black/10 transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60"
+            className="btn btn--primary btn--block btn--lg"
           >
             {loading ? "Verifying…" : "View Gallery"}
           </button>
           {error && (
-            <p className="mt-4 text-sm text-destructive" role="alert">
+            <p className="error-text" role="alert">
               {error}
             </p>
           )}
         </form>
 
-        <p className="mt-16 text-xs tracking-[0.3em] uppercase text-muted-foreground/70">
-          Elegant · Private · Timeless
-        </p>
+        <p className="hero__tag">Elegant · Private · Timeless</p>
       </section>
 
-      <footer className="pb-8 text-center text-xs text-muted-foreground/60 space-y-1">
+      <footer className="site-footer">
         <div>© {new Date().getFullYear()} OSLNZ. All galleries are private.</div>
-        <div className="tracking-[0.25em] uppercase">Made by NKO_Coding.codes</div>
+        <div className="kicker">Made by NKO_Coding.codes</div>
       </footer>
 
       {adminOpen && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4 backdrop-blur-sm"
+          className="modal-backdrop"
           role="dialog"
           aria-modal="true"
           aria-labelledby="admin-login-title"
@@ -161,15 +157,15 @@ function PinEntry() {
             if (e.target === e.currentTarget) setAdminOpen(false);
           }}
         >
-          <div className="w-full max-w-sm rounded-2xl border border-black/10 bg-background p-8 shadow-2xl">
-            <div className="mb-6 flex items-center justify-between">
-              <h2 id="admin-login-title" className="font-heading text-xl font-semibold">
+          <div className="modal">
+            <div className="modal__head">
+              <h2 id="admin-login-title" className="modal__title">
                 Admin Login
               </h2>
               <button
                 type="button"
                 onClick={() => setAdminOpen(false)}
-                className="text-muted-foreground hover:text-foreground"
+                className="btn--ghost"
                 aria-label="Close"
               >
                 ✕
@@ -190,17 +186,17 @@ function PinEntry() {
                   if (adminError) setAdminError(null);
                 }}
                 placeholder="Enter admin code"
-                className="w-full rounded-xl border border-black/10 bg-black/[0.03] px-5 py-4 text-center text-lg tracking-[0.3em] font-display outline-none placeholder:tracking-normal placeholder:text-muted-foreground/60 focus:border-pine focus:bg-black/[0.06]"
+                className="input pin-input"
               />
               <button
                 type="submit"
                 disabled={adminLoading || !adminCode.trim()}
-                className="mt-4 w-full rounded-xl bg-pine px-6 py-4 text-sm font-semibold tracking-wide text-pine-foreground shadow-lg shadow-black/10 transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60"
+                className="btn btn--primary btn--block"
               >
                 {adminLoading ? "Verifying…" : "Enter Dashboard"}
               </button>
               {adminError && (
-                <p className="mt-3 text-sm text-destructive" role="alert">
+                <p className="error-text" role="alert">
                   {adminError}
                 </p>
               )}

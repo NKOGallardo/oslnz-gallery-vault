@@ -205,20 +205,20 @@ function Lightbox({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex flex-col bg-white/95 backdrop-blur"
+      className="lightbox"
       role="dialog"
       aria-modal
     >
-      <div className="flex items-center justify-between px-6 py-4 text-xs tracking-[0.3em] uppercase text-foreground/70">
+      <div className="lightbox__bar">
         <span>{index + 1} / {total}</span>
-        <div className="flex items-center gap-4">
-          <button onClick={onDownload} className="hover:text-foreground">Download</button>
-          <button onClick={onClose} className="hover:text-foreground">Close ✕</button>
+        <div className="row">
+          <button onClick={onDownload}>Download</button>
+          <button onClick={onClose}>Close ✕</button>
         </div>
       </div>
 
       <div
-        className="relative flex flex-1 items-center justify-center overflow-hidden px-4"
+        className="lightbox__stage"
         onTouchStart={(e) => setTouchX(e.touches[0]!.clientX)}
         onTouchEnd={(e) => {
           if (touchX === null) return;
@@ -233,23 +233,20 @@ function Lightbox({
             src={image.url}
             alt={image.filename}
             onClick={() => setZoom((z) => !z)}
-            className={
-              "max-h-full max-w-full cursor-zoom-in select-none transition-transform duration-300 " +
-              (zoom ? "scale-150 cursor-zoom-out" : "")
-            }
+            className={"lightbox__img" + (zoom ? " is-zoomed" : "")}
           />
         )}
 
         <button
           onClick={onPrev}
-          className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full bg-black/10 p-3 text-foreground transition hover:bg-black/20"
+          className="lightbox__nav lightbox__nav--prev"
           aria-label="Previous"
         >
           ‹
         </button>
         <button
           onClick={onNext}
-          className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full bg-black/10 p-3 text-foreground transition hover:bg-black/20"
+          className="lightbox__nav lightbox__nav--next"
           aria-label="Next"
         >
           ›

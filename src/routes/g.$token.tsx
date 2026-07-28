@@ -94,7 +94,7 @@ function GalleryView() {
         className="pointer-events-none fixed inset-0 -z-10 bg-cover bg-center"
         style={{ backgroundImage: `url(${bgBronze.url})` }}
       />
-      <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 bg-black/45" />
+      <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 bg-white/50" />
       <header className="mx-auto flex max-w-6xl items-center justify-between px-6 pb-6 pt-10 sm:px-10">
         <OslnzLogo />
         <button
@@ -161,7 +161,7 @@ function GalleryView() {
               <button
                 key={img.id}
                 onClick={() => setLightbox(idx)}
-                className={`group relative mb-3 block w-full overflow-hidden bg-white/5 break-inside-avoid ${shape} ${radius}`}
+                className={`group relative mb-3 block w-full overflow-hidden bg-black/5 break-inside-avoid ${shape} ${radius}`}
                 aria-label={`Open ${img.filename}`}
               >
                 {img.url && (
@@ -229,15 +229,15 @@ function Lightbox({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex flex-col bg-black/95 backdrop-blur"
+      className="fixed inset-0 z-50 flex flex-col bg-white/95 backdrop-blur"
       role="dialog"
       aria-modal
     >
-      <div className="flex items-center justify-between px-6 py-4 text-xs tracking-[0.3em] uppercase text-white/70">
+      <div className="flex items-center justify-between px-6 py-4 text-xs tracking-[0.3em] uppercase text-foreground/70">
         <span>{index + 1} / {total}</span>
         <div className="flex items-center gap-4">
-          <button onClick={onDownload} className="hover:text-white">Download</button>
-          <button onClick={onClose} className="hover:text-white">Close ✕</button>
+          <button onClick={onDownload} className="hover:text-foreground">Download</button>
+          <button onClick={onClose} className="hover:text-foreground">Close ✕</button>
         </div>
       </div>
 
@@ -266,14 +266,14 @@ function Lightbox({
 
         <button
           onClick={onPrev}
-          className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full bg-white/10 p-3 text-white transition hover:bg-white/20"
+          className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full bg-black/10 p-3 text-foreground transition hover:bg-black/20"
           aria-label="Previous"
         >
           ‹
         </button>
         <button
           onClick={onNext}
-          className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full bg-white/10 p-3 text-white transition hover:bg-white/20"
+          className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full bg-black/10 p-3 text-foreground transition hover:bg-black/20"
           aria-label="Next"
         >
           ›

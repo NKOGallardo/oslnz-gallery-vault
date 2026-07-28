@@ -77,7 +77,7 @@ function PinEntry() {
         className="absolute inset-0 -z-10 bg-cover bg-center"
         style={{ backgroundImage: `url(${bgFloral.url})` }}
       />
-      <div aria-hidden className="absolute inset-0 -z-10 bg-black/40" />
+      <div aria-hidden className="absolute inset-0 -z-10 bg-white/50" />
 
       <header className="mx-auto max-w-6xl px-8 pt-10">
         <div className="flex items-center justify-between">
@@ -153,7 +153,7 @@ function PinEntry() {
 
       {adminOpen && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4 backdrop-blur-sm"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4 backdrop-blur-sm"
           role="dialog"
           aria-modal="true"
           aria-labelledby="admin-login-title"

@@ -255,11 +255,11 @@ function GalleryCard({
   const link = typeof window !== "undefined" ? `${window.location.origin}/?pin=${gallery.pin}` : "";
 
   return (
-    <div className="group flex flex-col gap-4 rounded-2xl border border-black/10 bg-black/[0.03] p-5 transition hover:border-pine/60">
+    <div className="panel gallery-card">
       <div>
-        <p className="text-[0.65rem] tracking-[0.3em] uppercase text-brown">{gallery.client_name}</p>
-        <h3 className="mt-1 font-heading text-xl font-semibold">{gallery.title}</h3>
-        <div className="mt-3 flex items-center gap-3 text-xs text-muted-foreground">
+        <p className="gallery-card__client">{gallery.client_name}</p>
+        <h3 className="gallery-card__title">{gallery.title}</h3>
+        <div className="gallery-card__meta">
           <span>{gallery.image_count} photos</span>
           <span>·</span>
           <span>{new Date(gallery.created_at).toLocaleDateString()}</span>
@@ -272,32 +272,29 @@ function GalleryCard({
         </div>
       </div>
 
-      <div className="flex items-center justify-between rounded-xl bg-black/5 px-3 py-2 font-mono text-sm">
-        <span className="tracking-[0.2em]">PIN: {gallery.pin}</span>
+      <div className="gallery-card__pin">
+        <span>PIN: {gallery.pin}</span>
         <button
           onClick={() => navigator.clipboard.writeText(gallery.pin)}
-          className="text-xs uppercase tracking-widest text-pine hover:text-foreground"
+          className="link-action"
         >
           Copy
         </button>
       </div>
 
       {qr && (
-        <div className="flex justify-center rounded-xl bg-white p-3">
-          <img src={qr} alt="QR" className="h-40 w-40" />
+        <div className="gallery-card__qr">
+          <img src={qr} alt="QR" />
         </div>
       )}
 
-      <div className="flex flex-wrap gap-2 text-xs">
-        <button
-          onClick={onOpen}
-          className="rounded-full bg-pine px-4 py-2 font-semibold text-pine-foreground"
-        >
+      <div className="gallery-card__actions">
+        <button onClick={onOpen} className="btn btn--primary btn--pill">
           Open
         </button>
         <button
           onClick={() => navigator.clipboard.writeText(link)}
-          className="rounded-full border border-black/10 px-4 py-2 text-muted-foreground hover:text-foreground"
+          className="btn btn--outline btn--pill"
         >
           Copy Link
         </button>
@@ -307,19 +304,19 @@ function GalleryCard({
             const dataUrl = await QRCode.toDataURL(link, { margin: 1, width: 320 });
             setQr(dataUrl);
           }}
-          className="rounded-full border border-black/10 px-4 py-2 text-muted-foreground hover:text-foreground"
+          className="btn btn--outline btn--pill"
         >
           {qr ? "Hide QR" : "QR"}
         </button>
         <button
           onClick={onDuplicate}
-          className="rounded-full border border-black/10 px-4 py-2 text-muted-foreground hover:text-foreground"
+          className="btn btn--outline btn--pill"
         >
           Duplicate
         </button>
         <button
           onClick={onDelete}
-          className="rounded-full border border-destructive/40 px-4 py-2 text-destructive hover:bg-destructive/10"
+          className="btn btn--danger btn--pill"
         >
           Delete
         </button>

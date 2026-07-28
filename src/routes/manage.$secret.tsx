@@ -546,10 +546,10 @@ function GalleryManageView({
   }
 
   if (isLoading) {
-    return <p className="pt-12 text-center text-muted-foreground">Loading gallery…</p>;
+    return <p className="muted" style={{ paddingTop: "3rem", textAlign: "center" }}>Loading gallery…</p>;
   }
   if (!data?.ok) {
-    return <p className="pt-12 text-center text-muted-foreground">Gallery not found.</p>;
+    return <p className="muted" style={{ paddingTop: "3rem", textAlign: "center" }}>Gallery not found.</p>;
   }
 
   const g = data.gallery;
@@ -558,17 +558,17 @@ function GalleryManageView({
     <section>
       <button
         onClick={onBack}
-        className="mb-8 text-xs tracking-[0.3em] uppercase text-muted-foreground hover:text-foreground"
+        className="btn--linklike back-link"
       >
         ← Back to dashboard
       </button>
 
-      <div className="flex flex-wrap items-end justify-between gap-6">
+      <div className="manage-head">
         <div>
-          <p className="text-xs tracking-[0.3em] uppercase text-brown">{g.client_name}</p>
-          <h2 className="mt-2 font-heading text-4xl font-semibold">{g.title}</h2>
-          <p className="mt-2 text-sm text-muted-foreground">
-            PIN <span className="font-mono">{g.pin}</span> · {data.images.length} photos
+          <p className="eyebrow">{g.client_name}</p>
+          <h2 className="manage-head__title">{g.title}</h2>
+          <p className="muted" style={{ marginTop: "0.5rem", fontSize: "0.875rem" }}>
+            PIN <span className="mono">{g.pin}</span> · {data.images.length} photos
             {g.expires_at && <> · expires {new Date(g.expires_at).toLocaleString()}</>}
           </p>
         </div>
@@ -580,7 +580,7 @@ function GalleryManageView({
             if (!res.ok) alert(res.error ?? "Failed");
             else qc.invalidateQueries({ queryKey: ["manage-gallery", galleryId, secret] });
           }}
-          className="rounded-full border border-black/10 px-4 py-2 text-xs uppercase tracking-widest text-muted-foreground hover:text-foreground"
+          className="btn btn--outline btn--pill"
         >
           Change PIN
         </button>
@@ -597,39 +597,34 @@ function GalleryManageView({
           setDragOver(false);
           uploadFiles(Array.from(e.dataTransfer.files));
         }}
-        className={
-          "mt-8 rounded-2xl border-2 border-dashed p-10 text-center transition " +
-          (dragOver ? "border-pine bg-pine/10" : "border-black/10 bg-black/[0.02]")
-        }
+        className={"dropzone" + (dragOver ? " is-over" : "")}
       >
-        <p className="font-heading text-xl">Drag & drop images</p>
-        <p className="mt-1 text-sm text-muted-foreground">JPEG, PNG, or WEBP</p>
-        <label className="mt-4 inline-block cursor-pointer rounded-full bg-pine px-5 py-2 text-sm font-semibold text-pine-foreground">
+        <p className="dropzone__title">Drag &amp; drop images</p>
+        <p className="dropzone__hint">JPEG, PNG, or WEBP</p>
+        <label className="dropzone__picker">
           Choose files
           <input
             type="file"
             accept="image/jpeg,image/png,image/webp"
             multiple
-            className="hidden"
             onChange={(e) => e.target.files && uploadFiles(Array.from(e.target.files))}
           />
         </label>
         {uploading && (
-          <p className="mt-4 text-sm text-muted-foreground">
+          <p className="dropzone__hint" style={{ marginTop: "1rem" }}>
             Uploading {uploading.done} / {uploading.total}…
           </p>
         )}
       </div>
 
-      <div className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+      <div className="grid grid--thumbs">
         {data.images.map((img) => (
-          <div key={img.id} className="group relative aspect-square overflow-hidden rounded-xl bg-black/5">
+          <div key={img.id} className="thumb">
             {img.url && (
               <img
                 src={img.url}
                 alt={img.original_filename}
                 loading="lazy"
-                className="h-full w-full object-cover"
               />
             )}
             <button
@@ -639,7 +634,7 @@ function GalleryManageView({
                 qc.invalidateQueries({ queryKey: ["manage-gallery", galleryId, secret] });
                 qc.invalidateQueries({ queryKey: ["dashboard", secret] });
               }}
-              className="absolute right-2 top-2 rounded-full bg-black/60 px-2 py-1 text-[0.65rem] uppercase tracking-widest text-white opacity-0 transition group-hover:opacity-100"
+              className="thumb__delete"
             >
               Delete
             </button>

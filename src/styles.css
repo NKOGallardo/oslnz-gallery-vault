@@ -202,6 +202,40 @@ h1, h2, h3, h4 { font-family: var(--font-serif); letter-spacing: -0.02em; line-h
 .hero__tag { margin-top: 4rem; font-family: var(--font-display); font-size: 0.7rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--muted-soft); }
 
 /* ---------- modal ---------- */
+/* ---------- showcase (home scroll) ---------- */
+.showcase {
+  margin: 0 auto; max-width: 72rem;
+  padding: 0 1.5rem 4rem; text-align: center;
+}
+.showcase .hero__title { margin-top: 1.5rem; font-size: 2.5rem; font-weight: 700; }
+.showcase .hero__copy { margin: 1.25rem auto 0; max-width: 30rem; }
+.scroll-cue {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  margin-top: 2rem; font-family: var(--font-display);
+  font-size: 0.7rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--muted);
+}
+.scroll-cue span { animation: cue-bounce 1.6s ease-in-out infinite; }
+@keyframes cue-bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(4px); } }
+
+.showcase__strip { margin-top: 2.5rem; display: grid; gap: 1rem; grid-template-columns: 1fr; }
+.showcase__item {
+  position: relative; overflow: hidden; border-radius: var(--radius-xl);
+  background: var(--surface); box-shadow: var(--shadow);
+}
+.showcase__item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s; }
+.showcase__item:hover img { transform: scale(1.04); }
+.showcase__item figcaption {
+  position: absolute; left: 0.75rem; bottom: 0.75rem;
+  border-radius: var(--radius-pill); background: rgba(0, 0, 0, 0.55);
+  padding: 0.25rem 0.75rem; font-family: var(--font-display);
+  font-size: 0.62rem; letter-spacing: 0.25em; text-transform: uppercase; color: #fff;
+}
+.showcase__item--0 { aspect-ratio: 4 / 5; }
+.showcase__item--1 { aspect-ratio: 4 / 3; }
+.showcase__item--2 { aspect-ratio: 1 / 1; }
+.showcase__item--3 { aspect-ratio: 3 / 4; }
+
+/* ---------- modal ---------- */
 .modal-backdrop {
   position: fixed; inset: 0; z-index: 50;
   display: flex; align-items: center; justify-content: center;
@@ -363,6 +397,9 @@ h1, h2, h3, h4 { font-family: var(--font-serif); letter-spacing: -0.02em; line-h
 @media (min-width: 640px) {
   .shell { padding-left: 2.5rem; padding-right: 2.5rem; }
   .hero__title { font-size: 3.5rem; }
+  .showcase .hero__title { font-size: 3rem; }
+  .showcase__strip { grid-template-columns: repeat(2, 1fr); gap: 1.25rem; }
+  .showcase__item--1, .showcase__item--2 { align-self: center; }
   .grid--stats { grid-template-columns: repeat(3, 1fr); }
   .grid--cards { grid-template-columns: repeat(2, 1fr); }
   .grid--thumbs { grid-template-columns: repeat(3, 1fr); }

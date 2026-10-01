@@ -5,17 +5,6 @@ import { verifyPin } from "@/lib/gallery.functions";
 import { adminLogin } from "@/lib/photographer.functions";
 import { OslnzLogo } from "@/components/OslnzLogo";
 import bgFloral from "@/assets/bg-floral.jpeg.asset.json";
-import showcase1 from "@/assets/showcase-1.jpg";
-import showcase2 from "@/assets/showcase-2.jpg";
-import showcase3 from "@/assets/showcase-3.jpg";
-import showcase4 from "@/assets/showcase-4.jpg";
-
-const showcase = [
-  { src: showcase1, w: 1024, h: 1280, caption: "Bridal" },
-  { src: showcase2, w: 1280, h: 960, caption: "Couples" },
-  { src: showcase3, w: 1024, h: 1024, caption: "Details" },
-  { src: showcase4, w: 1024, h: 1280, caption: "Portraits" },
-];
 
 export const Route = createFileRoute("/")({
   component: PinEntry,

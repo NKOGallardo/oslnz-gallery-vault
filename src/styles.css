@@ -400,9 +400,6 @@ h1, h2, h3, h4 { font-family: var(--font-serif); letter-spacing: -0.02em; line-h
 @media (min-width: 640px) {
   .shell { padding-left: 2.5rem; padding-right: 2.5rem; }
   .hero__title { font-size: 3.5rem; }
-  .showcase .hero__title { font-size: 3rem; }
-  .showcase__strip { grid-template-columns: repeat(2, 1fr); gap: 1.25rem; }
-  .showcase__item--1, .showcase__item--2 { align-self: center; }
   .grid--stats { grid-template-columns: repeat(3, 1fr); }
   .grid--cards { grid-template-columns: repeat(2, 1fr); }
   .grid--thumbs { grid-template-columns: repeat(3, 1fr); }

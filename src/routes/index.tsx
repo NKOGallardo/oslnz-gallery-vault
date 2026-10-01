@@ -96,35 +96,6 @@ function PinEntry() {
         </div>
       </header>
 
-      <section className="showcase">
-        <p className="eyebrow">Private Client Access</p>
-        <h1 className="hero__title">
-          Welcome to the <span className="accent">OSLNZ</span> Client Gallery
-        </h1>
-        <p className="hero__copy">
-          Scroll through a glimpse of our work, then enter the private gallery PIN
-          provided by your photographer.
-        </p>
-        <a href="#pin" className="scroll-cue">
-          Scroll <span aria-hidden>↓</span>
-        </a>
-
-        <div className="showcase__strip">
-          {showcase.map((img, i) => (
-            <figure key={img.caption} className={`showcase__item showcase__item--${i % 4}`}>
-              <img
-                src={img.src}
-                width={img.w}
-                height={img.h}
-                loading={i === 0 ? "eager" : "lazy"}
-                alt={`OSLNZ ${img.caption.toLowerCase()} photography`}
-              />
-              <figcaption>{img.caption}</figcaption>
-            </figure>
-          ))}
-        </div>
-      </section>
-
       <section className="hero" id="pin">
         <p className="eyebrow">Your Gallery</p>
         <h2 className="hero__title">Enter your PIN</h2>

@@ -4,6 +4,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useState, useCallback } from "react";
 import { getGalleryByToken, getImageDownloadUrl } from "@/lib/gallery.functions";
 import { OslnzLogo } from "@/components/OslnzLogo";
+import { BlurImage } from "@/components/BlurImage";
 import bgBronze from "@/assets/bg-bronze.jpeg.asset.json";
 
 export const Route = createFileRoute("/g/$token")({
@@ -144,11 +145,7 @@ function GalleryView() {
                 aria-label={`Open ${img.filename}`}
               >
                 {img.url && (
-                  <img
-                    src={img.url}
-                    alt={img.filename}
-                    loading="lazy"
-                  />
+                  <BlurImage src={img.url} alt={img.filename} />
                 )}
                 <span className="masonry__badge">
                   <span>OSLNZ</span>

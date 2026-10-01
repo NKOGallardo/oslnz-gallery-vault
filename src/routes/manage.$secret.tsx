@@ -517,29 +517,40 @@ function GalleryManageView({
     const valid = files.filter((f) => /image\/(jpeg|png|webp)/i.test(f.type));
     if (valid.length === 0) return;
     setUploading({ done: 0, total: valid.length });
-    for (let i = 0; i < valid.length; i++) {
-      const f = valid[i]!;
+    let done = 0;
+    let failed = 0;
+    let next = 0;
+    async function uploadOne(f: File) {
       const req = await request({
         data: { secret, galleryId, filename: f.name, contentType: f.type },
       });
-      if (!req.ok) {
-        alert(req.error);
-        continue;
-      }
+      if (!req.ok) throw new Error(req.error);
       const res = await fetch(req.signedUrl, {
         method: "PUT",
         headers: { "content-type": f.type },
         body: f,
       });
-      if (!res.ok) {
-        alert("Upload failed");
-        continue;
-      }
+      if (!res.ok) throw new Error("Upload failed");
       await register({
         data: { secret, galleryId, path: req.path, filename: f.name, size: f.size },
       });
-      setUploading({ done: i + 1, total: valid.length });
     }
+    // Upload several photos at the same time instead of one by one.
+    const CONCURRENCY = 5;
+    async function worker() {
+      while (next < valid.length) {
+        const f = valid[next++]!;
+        try {
+          await uploadOne(f);
+        } catch {
+          failed++;
+        }
+        done++;
+        setUploading({ done, total: valid.length });
+      }
+    }
+    await Promise.all(Array.from({ length: Math.min(CONCURRENCY, valid.length) }, worker));
+    if (failed) alert(`${failed} photo(s) failed to upload. Please try them again.`);
     setUploading(null);
     qc.invalidateQueries({ queryKey: ["manage-gallery", galleryId, secret] });
     qc.invalidateQueries({ queryKey: ["dashboard", secret] });

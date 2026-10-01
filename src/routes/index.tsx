@@ -5,17 +5,6 @@ import { verifyPin } from "@/lib/gallery.functions";
 import { adminLogin } from "@/lib/photographer.functions";
 import { OslnzLogo } from "@/components/OslnzLogo";
 import bgFloral from "@/assets/bg-floral.jpeg.asset.json";
-import showcase1 from "@/assets/showcase-1.jpg";
-import showcase2 from "@/assets/showcase-2.jpg";
-import showcase3 from "@/assets/showcase-3.jpg";
-import showcase4 from "@/assets/showcase-4.jpg";
-
-const showcase = [
-  { src: showcase1, w: 1024, h: 1280, caption: "Bridal" },
-  { src: showcase2, w: 1280, h: 960, caption: "Couples" },
-  { src: showcase3, w: 1024, h: 1024, caption: "Details" },
-  { src: showcase4, w: 1024, h: 1280, caption: "Portraits" },
-];
 
 export const Route = createFileRoute("/")({
   component: PinEntry,
@@ -106,35 +95,6 @@ function PinEntry() {
           </button>
         </div>
       </header>
-
-      <section className="showcase">
-        <p className="eyebrow">Private Client Access</p>
-        <h1 className="hero__title">
-          Welcome to the <span className="accent">OSLNZ</span> Client Gallery
-        </h1>
-        <p className="hero__copy">
-          Scroll through a glimpse of our work, then enter the private gallery PIN
-          provided by your photographer.
-        </p>
-        <a href="#pin" className="scroll-cue">
-          Scroll <span aria-hidden>↓</span>
-        </a>
-
-        <div className="showcase__strip">
-          {showcase.map((img, i) => (
-            <figure key={img.caption} className={`showcase__item showcase__item--${i % 4}`}>
-              <img
-                src={img.src}
-                width={img.w}
-                height={img.h}
-                loading={i === 0 ? "eager" : "lazy"}
-                alt={`OSLNZ ${img.caption.toLowerCase()} photography`}
-              />
-              <figcaption>{img.caption}</figcaption>
-            </figure>
-          ))}
-        </div>
-      </section>
 
       <section className="hero" id="pin">
         <p className="eyebrow">Your Gallery</p>

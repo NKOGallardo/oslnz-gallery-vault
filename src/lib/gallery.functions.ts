@@ -96,6 +96,21 @@ export const getGalleryByToken = createServerFn({ method: "POST" })
     };
   });
 
+// -------- Public: record a full-gallery download --------
+export const recordGalleryDownload = createServerFn({ method: "POST" })
+  .inputValidator((d: { token: string }) => z.object({ token: z.string() }).parse(d))
+  .handler(async ({ data }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { verifyGalleryToken } = await import("@/lib/token.server");
+    const payload = verifyGalleryToken(data.token);
+    if (!payload) return { ok: false as const };
+    const { data: g } = await supabaseAdmin
+      .from("galleries").select("download_count").eq("id", payload.gid).maybeSingle();
+    await supabaseAdmin
+      .from("galleries").update({ download_count: (g?.download_count ?? 0) + 1 }).eq("id", payload.gid);
+    return { ok: true as const };
+  });
+
 // -------- Public: get download URL for one image (increments counter) --------
 export const getImageDownloadUrl = createServerFn({ method: "POST" })
   .inputValidator((d: { token: string; imageId: string }) =>

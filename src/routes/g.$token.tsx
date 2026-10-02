@@ -2,7 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useState, useCallback } from "react";
-import { getGalleryByToken, getImageDownloadUrl } from "@/lib/gallery.functions";
+import { getGalleryByToken, getImageDownloadUrl, recordGalleryDownload } from "@/lib/gallery.functions";
 import { OslnzLogo } from "@/components/OslnzLogo";
 import { BlurImage } from "@/components/BlurImage";
 import bgBronze from "@/assets/bg-bronze.jpeg.asset.json";
@@ -61,8 +61,45 @@ function GalleryView() {
     if (res.ok) window.location.href = res.url;
   }
 
-  function downloadAll() {
-    window.location.href = `/api/public/gallery/${token}/zip`;
+  const recordDownload = useServerFn(recordGalleryDownload);
+  const [zipping, setZipping] = useState<string | null>(null);
+
+  async function downloadAll() {
+    if (zipping) return;
+    try {
+      const { default: JSZip } = await import("jszip");
+      const zip = new JSZip();
+      let done = 0;
+      setZipping(`Preparing 0 / ${images.length}`);
+      const queue = images.map((img, i) => ({ img, i }));
+      async function worker() {
+        while (queue.length) {
+          const { img, i } = queue.shift()!;
+          if (!img.url) continue;
+          const res = await fetch(img.url);
+          if (res.ok) {
+            zip.file(String(i + 1).padStart(3, "0") + "_" + img.filename, await res.blob());
+          }
+          done++;
+          setZipping(`Preparing ${done} / ${images.length}`);
+        }
+      }
+      await Promise.all(Array.from({ length: 4 }, worker));
+      setZipping("Creating ZIP…");
+      const blob = await zip.generateAsync({ type: "blob", compression: "STORE" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = (gallery?.title.replace(/[^a-zA-Z0-9._-]/g, "_") || "gallery") + ".zip";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(a.href), 10_000);
+      recordDownload({ data: { token } }).catch(() => {});
+    } catch {
+      alert("Download failed. Please try again.");
+    } finally {
+      setZipping(null);
+    }
   }
 
   if (isLoading) {
@@ -120,8 +157,8 @@ function GalleryView() {
         </div>
         {images.length > 0 && (
           <div className="gallery-head__actions">
-            <button onClick={downloadAll} className="btn btn--pine-soft">
-              Download entire gallery
+            <button onClick={downloadAll} className="btn btn--pine-soft" disabled={!!zipping}>
+              {zipping ?? "Download entire gallery"}
             </button>
           </div>
         )}

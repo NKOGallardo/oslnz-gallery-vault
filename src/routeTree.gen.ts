@@ -10,8 +10,8 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as ManageSecretRouteImport } from './routes/manage.$secret'
 import { Route as GTokenRouteImport } from './routes/g.$token'
+import { Route as ManageSecretRouteImport } from './routes/manage.$secret'
 import { Route as ApiPublicAdminLoginRouteImport } from './routes/api/public/admin.login'
 import { Route as ApiPublicGalleryTokenZipRouteImport } from './routes/api/public/gallery.$token.zip'
 
@@ -20,14 +20,14 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ManageSecretRoute = ManageSecretRouteImport.update({
-  id: '/manage/$secret',
-  path: '/manage/$secret',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const GTokenRoute = GTokenRouteImport.update({
   id: '/g/$token',
   path: '/g/$token',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ManageSecretRoute = ManageSecretRouteImport.update({
+  id: '/manage/$secret',
+  path: '/manage/$secret',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiPublicAdminLoginRoute = ApiPublicAdminLoginRouteImport.update({
@@ -105,18 +105,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/manage/$secret': {
-      id: '/manage/$secret'
-      path: '/manage/$secret'
-      fullPath: '/manage/$secret'
-      preLoaderRoute: typeof ManageSecretRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/g/$token': {
       id: '/g/$token'
       path: '/g/$token'
       fullPath: '/g/$token'
       preLoaderRoute: typeof GTokenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/manage/$secret': {
+      id: '/manage/$secret'
+      path: '/manage/$secret'
+      fullPath: '/manage/$secret'
+      preLoaderRoute: typeof ManageSecretRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/public/admin/login': {

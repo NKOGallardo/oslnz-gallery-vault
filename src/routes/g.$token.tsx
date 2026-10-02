@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { getGalleryByToken, getImageDownloadUrl, recordGalleryDownload } from "@/lib/gallery.functions";
 import { OslnzLogo } from "@/components/OslnzLogo";
 import { BlurImage } from "@/components/BlurImage";
@@ -19,6 +19,8 @@ export const Route = createFileRoute("/g/$token")({
 
 type Img = { id: string; filename: string; url: string | null };
 
+const IMAGE_BATCH_SIZE = 5;
+
 function GalleryView() {
   const { token } = Route.useParams();
   const navigate = useNavigate();
@@ -34,6 +36,51 @@ function GalleryView() {
   const [lightbox, setLightbox] = useState<number | null>(null);
   const images: Img[] = data?.ok ? data.images : [];
   const gallery = data?.ok ? data.gallery : null;
+  const [hiddenCount, setHiddenCount] = useState(0);
+  const [visibleCount, setVisibleCount] = useState(IMAGE_BATCH_SIZE);
+  const galleryTopRef = useRef<HTMLDivElement>(null);
+  const passedImagesRef = useRef(new Set<number>());
+  const renderedImages = images.slice(hiddenCount, Math.min(visibleCount, images.length));
+
+  useEffect(() => {
+    setHiddenCount(0);
+    setVisibleCount(IMAGE_BATCH_SIZE);
+    passedImagesRef.current.clear();
+  }, [token]);
+
+  useEffect(() => {
+    if (renderedImages.length === 0) return;
+
+    const items = document.querySelectorAll<HTMLElement>("[data-gallery-index]");
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          const index = Number((entry.target as HTMLElement).dataset.galleryIndex);
+          if (!entry.isIntersecting && entry.boundingClientRect.bottom < 0 && Number.isInteger(index)) {
+            passedImagesRef.current.add(index);
+          }
+        }
+
+        setHiddenCount((current) => {
+          let next = current;
+          while (passedImagesRef.current.has(next) && next < visibleCount) next += 1;
+          return next;
+        });
+      },
+      { threshold: 0 },
+    );
+
+    items.forEach((item) => observer.observe(item));
+    return () => observer.disconnect();
+  }, [hiddenCount, renderedImages.length, visibleCount]);
+
+  const restoreTopImages = useCallback(() => {
+    passedImagesRef.current.clear();
+    setHiddenCount(0);
+    requestAnimationFrame(() => {
+      galleryTopRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  }, []);
 
   const close = useCallback(() => setLightbox(null), []);
   const prev = useCallback(
@@ -74,7 +121,9 @@ function GalleryView() {
       const queue = images.map((img, i) => ({ img, i }));
       async function worker() {
         while (queue.length) {
-          const { img, i } = queue.shift()!;
+          const item = queue.shift();
+          if (!item) return;
+          const { img, i } = item;
           if (!img.url) continue;
           const res = await fetch(img.url);
           if (res.ok) {
@@ -140,13 +189,13 @@ function GalleryView() {
       </header>
 
       <section className="shell shell--md gallery-head">
-        <p className="eyebrow">{gallery!.clientName}</p>
-        <h1 className="gallery-head__title">{gallery!.title}</h1>
+        <p className="eyebrow">{gallery?.clientName}</p>
+        <h1 className="gallery-head__title">{gallery?.title}</h1>
         <div className="gallery-head__meta">
-          {gallery!.eventName && <span>{gallery!.eventName}</span>}
-          {gallery!.eventDate && (
+          {gallery?.eventName && <span>{gallery.eventName}</span>}
+          {gallery?.eventDate && (
             <span>
-              {new Date(gallery!.eventDate + "T00:00:00").toLocaleDateString(undefined, {
+              {new Date(gallery.eventDate + "T00:00:00").toLocaleDateString(undefined, {
                 year: "numeric",
                 month: "long",
                 day: "numeric",
@@ -164,19 +213,30 @@ function GalleryView() {
         )}
       </section>
 
-      <section className="shell shell--lg" style={{ paddingBottom: "6rem" }}>
+      <section className="shell shell--lg gallery-images">
         {images.length === 0 ? (
-          <p className="muted" style={{ padding: "6rem 0", textAlign: "center" }}>
+          <p className="gallery-images__empty muted">
             Your photographer hasn't added any photos yet.
           </p>
         ) : (
-          <div className="masonry">
-            {images.map((img, idx) => {
+          <>
+            <div ref={galleryTopRef} className="load-top-images">
+              {hiddenCount > 0 && (
+                <button type="button" className="load-button" onClick={restoreTopImages}>
+                  ↑ Load Top
+                </button>
+              )}
+            </div>
+            <div className="masonry">
+            {renderedImages.map((img, offset) => {
+              const idx = hiddenCount + offset;
               const shape = `shape-${idx % 7}`;
               const radius = `radius-${idx % 4}`;
               return (
               <button
                 key={img.id}
+                type="button"
+                data-gallery-index={idx}
                 onClick={() => setLightbox(idx)}
                 className={`masonry__item ${shape} ${radius}`}
                 aria-label={`Open ${img.filename}`}
@@ -190,7 +250,19 @@ function GalleryView() {
               </button>
               );
             })}
-          </div>
+            </div>
+            {visibleCount < images.length && (
+              <div className="load-more-images">
+                <button
+                  type="button"
+                  className="load-button"
+                  onClick={() => setVisibleCount((count) => Math.min(count + IMAGE_BATCH_SIZE, images.length))}
+                >
+                  ✨ Load More pictures
+                </button>
+              </div>
+            )}
+          </>
         )}
       </section>
 
@@ -207,7 +279,10 @@ function GalleryView() {
           onClose={close}
           onPrev={prev}
           onNext={next}
-          onDownload={() => downloadOne(images[lightbox]!.id)}
+          onDownload={() => {
+            const selectedImage = images[lightbox];
+            if (selectedImage) void downloadOne(selectedImage.id);
+          }}
         />
       )}
     </main>
@@ -253,10 +328,12 @@ function Lightbox({
 
       <div
         className="lightbox__stage"
-        onTouchStart={(e) => setTouchX(e.touches[0]!.clientX)}
+        onTouchStart={(e) => setTouchX(e.touches[0]?.clientX ?? null)}
         onTouchEnd={(e) => {
           if (touchX === null) return;
-          const dx = e.changedTouches[0]!.clientX - touchX;
+          const changedTouch = e.changedTouches[0];
+          if (!changedTouch) return;
+          const dx = changedTouch.clientX - touchX;
           if (dx > 40) onPrev();
           else if (dx < -40) onNext();
           setTouchX(null);

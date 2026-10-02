@@ -8,3 +8,5 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+- Client gallery rendering uses five-image batches and removes only consecutively passed top images; this keeps large galleries responsive while preserving original indexes for lightbox and downloads.

@@ -63,6 +63,7 @@ export type Database = {
       }
       gallery_images: {
         Row: {
+          alt_text: string | null
           created_at: string
           gallery_id: string
           id: string
@@ -72,6 +73,7 @@ export type Database = {
           storage_path: string
         }
         Insert: {
+          alt_text?: string | null
           created_at?: string
           gallery_id: string
           id?: string
@@ -81,6 +83,7 @@ export type Database = {
           storage_path: string
         }
         Update: {
+          alt_text?: string | null
           created_at?: string
           gallery_id?: string
           id?: string

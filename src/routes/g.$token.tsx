@@ -26,6 +26,7 @@ function GalleryView() {
   const navigate = useNavigate();
   const fetchGallery = useServerFn(getGalleryByToken);
   const fetchAllPhotos = useServerFn(getAllPhotoPathsForDownload);
+  const getDownload = useServerFn(getImageDownloadUrl);
 
   const { data, isLoading } = useQuery({
     queryKey: ["gallery", token],

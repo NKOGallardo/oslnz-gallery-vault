@@ -47,41 +47,58 @@ export const verifyPin = createServerFn({ method: "POST" })
   });
 
 // -------- Public: read gallery via token --------
+async function loadValidGallery(token: string) {
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { verifyGalleryToken } = await import("@/lib/token.server");
+  const payload = verifyGalleryToken(token);
+  if (!payload) return { error: "This gallery link has expired. Please enter your PIN again." } as const;
+  const { data: gallery } = await supabaseAdmin
+    .from("galleries")
+    .select("id, title, client_name, event_name, event_date, expires_at")
+    .eq("id", payload.gid)
+    .maybeSingle();
+  if (!gallery) return { error: "Gallery not found." } as const;
+  if (gallery.expires_at && new Date(gallery.expires_at) < new Date()) {
+    return { error: "This gallery has expired." } as const;
+  }
+  return { gallery, supabaseAdmin } as const;
+}
+
 export const getGalleryByToken = createServerFn({ method: "POST" })
-  .inputValidator((d: { token: string }) => z.object({ token: z.string().min(10) }).parse(d))
+  .inputValidator((d: { token: string; offset?: number; limit?: number }) =>
+    z
+      .object({
+        token: z.string().min(10),
+        offset: z.number().int().min(0).default(0),
+        limit: z.number().int().min(1).max(50).default(5),
+      })
+      .parse(d),
+  )
   .handler(async ({ data }) => {
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { verifyGalleryToken } = await import("@/lib/token.server");
-    const payload = verifyGalleryToken(data.token);
-    if (!payload) return { ok: false as const, error: "This gallery link has expired. Please enter your PIN again." };
+    const res = await loadValidGallery(data.token);
+    if ("error" in res) return { ok: false as const, error: res.error as string };
+    const { gallery, supabaseAdmin } = res;
+    const { offset, limit } = data;
 
-    const { data: gallery } = await supabaseAdmin
-      .from("galleries")
-      .select("id, title, client_name, event_name, event_date, expires_at")
-      .eq("id", payload.gid)
-      .maybeSingle();
-    if (!gallery) return { ok: false as const, error: "Gallery not found." };
-    if (gallery.expires_at && new Date(gallery.expires_at) < new Date()) {
-      return { ok: false as const, error: "This gallery has expired." };
-    }
-
-    const { data: images } = await supabaseAdmin
+    const { data: images, count } = await supabaseAdmin
       .from("gallery_images")
-      .select("id, storage_path, original_filename, sort_order")
+      .select("id, storage_path, original_filename", { count: "exact" })
       .eq("gallery_id", gallery.id)
       .order("sort_order", { ascending: true })
-      .order("created_at", { ascending: true });
+      .order("created_at", { ascending: true })
+      .order("id", { ascending: true })
+      .range(offset, offset + limit - 1);
 
-    const paths = (images ?? []).map((i) => i.storage_path);
-    const signed = paths.length
-      ? (await supabaseAdmin.storage.from("gallery-images").createSignedUrls(paths, SIGNED_URL_TTL)).data ?? []
+    const rows = images ?? [];
+    const signed = rows.length
+      ? (await supabaseAdmin.storage.from("gallery-images").createSignedUrls(rows.map((i) => i.storage_path), SIGNED_URL_TTL)).data ?? []
       : [];
-
-    const withUrls = (images ?? []).map((img, idx) => ({
+    const photos = rows.map((img, idx) => ({
       id: img.id,
       filename: img.original_filename,
       url: signed[idx]?.signedUrl ?? null,
     }));
+    const totalCount = count ?? 0;
 
     return {
       ok: true as const,
@@ -92,7 +109,37 @@ export const getGalleryByToken = createServerFn({ method: "POST" })
         eventName: gallery.event_name,
         eventDate: gallery.event_date,
       },
-      images: withUrls,
+      photos,
+      totalCount,
+      hasMore: offset + limit < totalCount,
+    };
+  });
+
+// -------- Public: all photos for ZIP download (on demand) --------
+export const getAllPhotoPathsForDownload = createServerFn({ method: "POST" })
+  .inputValidator((d: { token: string }) => z.object({ token: z.string().min(10) }).parse(d))
+  .handler(async ({ data }) => {
+    const res = await loadValidGallery(data.token);
+    if ("error" in res) return { ok: false as const, error: res.error as string };
+    const { gallery, supabaseAdmin } = res;
+    const { data: images } = await supabaseAdmin
+      .from("gallery_images")
+      .select("id, storage_path, original_filename")
+      .eq("gallery_id", gallery.id)
+      .order("sort_order", { ascending: true })
+      .order("created_at", { ascending: true })
+      .order("id", { ascending: true });
+    const rows = images ?? [];
+    const signed = rows.length
+      ? (await supabaseAdmin.storage.from("gallery-images").createSignedUrls(rows.map((i) => i.storage_path), SIGNED_URL_TTL)).data ?? []
+      : [];
+    return {
+      ok: true as const,
+      photos: rows.map((img, idx) => ({
+        id: img.id,
+        filename: img.original_filename,
+        url: signed[idx]?.signedUrl ?? null,
+      })),
     };
   });
 

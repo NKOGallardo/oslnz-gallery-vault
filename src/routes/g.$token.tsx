@@ -2,7 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useState, useCallback } from "react";
-import { getGalleryByToken, getImageDownloadUrl, recordGalleryDownload } from "@/lib/gallery.functions";
+import { getGalleryByToken, getAllPhotoPathsForDownload, getImageDownloadUrl, recordGalleryDownload } from "@/lib/gallery.functions";
 import { OslnzLogo } from "@/components/OslnzLogo";
 import { BlurImage } from "@/components/BlurImage";
 import bgBronze from "@/assets/bg-bronze.jpeg.asset.json";
@@ -25,23 +25,56 @@ function GalleryView() {
   const { token } = Route.useParams();
   const navigate = useNavigate();
   const fetchGallery = useServerFn(getGalleryByToken);
+  const fetchAllPhotos = useServerFn(getAllPhotoPathsForDownload);
   const getDownload = useServerFn(getImageDownloadUrl);
 
   const { data, isLoading } = useQuery({
     queryKey: ["gallery", token],
-    queryFn: () => fetchGallery({ data: { token } }),
+    queryFn: () => fetchGallery({ data: { token, offset: 0, limit: IMAGE_BATCH_SIZE } }),
     staleTime: 60_000,
   });
 
   const [lightbox, setLightbox] = useState<number | null>(null);
-  const images: Img[] = data?.ok ? data.images : [];
   const gallery = data?.ok ? data.gallery : null;
-  const [visibleCount, setVisibleCount] = useState(IMAGE_BATCH_SIZE);
-  const renderedImages = images.slice(0, Math.min(visibleCount, images.length));
+  const [images, setImages] = useState<Img[]>([]);
+  const [offset, setOffset] = useState(0);
+  const [hasMore, setHasMore] = useState(false);
+  const [totalCount, setTotalCount] = useState(0);
+  const [loadingMore, setLoadingMore] = useState(false);
 
   useEffect(() => {
-    setVisibleCount(IMAGE_BATCH_SIZE);
-  }, [token]);
+    if (data?.ok) {
+      setImages(data.photos);
+      setOffset(IMAGE_BATCH_SIZE);
+      setHasMore(data.hasMore);
+      setTotalCount(data.totalCount);
+    } else {
+      setImages([]);
+      setOffset(0);
+      setHasMore(false);
+      setTotalCount(0);
+    }
+  }, [data]);
+
+  async function loadMore() {
+    if (loadingMore || !hasMore) return;
+    setLoadingMore(true);
+    try {
+      const res = await fetchGallery({ data: { token, offset, limit: IMAGE_BATCH_SIZE } });
+      if (res.ok) {
+        setImages((prev) => {
+          const seen = new Set(prev.map((p) => p.id));
+          return [...prev, ...res.photos.filter((p) => !seen.has(p.id))];
+        });
+        setOffset((o) => o + IMAGE_BATCH_SIZE);
+        setHasMore(res.hasMore);
+        setTotalCount(res.totalCount);
+      }
+    } finally {
+      setLoadingMore(false);
+    }
+  }
+
 
 
   const close = useCallback(() => setLightbox(null), []);
@@ -79,8 +112,12 @@ function GalleryView() {
       const { default: JSZip } = await import("jszip");
       const zip = new JSZip();
       let done = 0;
-      setZipping(`Preparing 0 / ${images.length}`);
-      const queue = images.map((img, i) => ({ img, i }));
+      setZipping("Preparing…");
+      const all = await fetchAllPhotos({ data: { token } });
+      if (!all.ok) throw new Error(all.error);
+      const allImages = all.photos;
+      setZipping(`Preparing 0 / ${allImages.length}`);
+      const queue = allImages.map((img, i) => ({ img, i }));
       async function worker() {
         while (queue.length) {
           const item = queue.shift();
@@ -92,7 +129,7 @@ function GalleryView() {
             zip.file(String(i + 1).padStart(3, "0") + "_" + img.filename, await res.blob());
           }
           done++;
-          setZipping(`Preparing ${done} / ${images.length}`);
+          setZipping(`Preparing ${done} / ${allImages.length}`);
         }
       }
       await Promise.all(Array.from({ length: 4 }, worker));
@@ -164,7 +201,7 @@ function GalleryView() {
               })}
             </span>
           )}
-          <span>{images.length} {images.length === 1 ? "image" : "images"}</span>
+          <span>{totalCount} {totalCount === 1 ? "image" : "images"}</span>
         </div>
         {images.length > 0 && (
           <div className="gallery-head__actions">
@@ -183,7 +220,7 @@ function GalleryView() {
         ) : (
           <>
             <div className="masonry">
-            {renderedImages.map((img, offset) => {
+            {images.map((img, offset) => {
               const idx = offset;
               const shape = `shape-${idx % 7}`;
               const radius = `radius-${idx % 4}`;
@@ -206,14 +243,15 @@ function GalleryView() {
               );
             })}
             </div>
-            {visibleCount < images.length && (
+            {hasMore && (
               <div className="load-more-images">
                 <button
                   type="button"
                   className="load-button"
-                  onClick={() => setVisibleCount((count) => Math.min(count + IMAGE_BATCH_SIZE, images.length))}
+                  onClick={() => void loadMore()}
+                  disabled={loadingMore}
                 >
-                  ✨ Load More pictures
+                  {loadingMore ? "Loading…" : "✨ Load More pictures"}
                 </button>
               </div>
             )}

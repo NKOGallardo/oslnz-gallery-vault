@@ -25,23 +25,56 @@ function GalleryView() {
   const { token } = Route.useParams();
   const navigate = useNavigate();
   const fetchGallery = useServerFn(getGalleryByToken);
+  const fetchAllPhotos = useServerFn(getAllPhotoPathsForDownload);
   const getDownload = useServerFn(getImageDownloadUrl);
 
   const { data, isLoading } = useQuery({
     queryKey: ["gallery", token],
-    queryFn: () => fetchGallery({ data: { token } }),
+    queryFn: () => fetchGallery({ data: { token, offset: 0, limit: IMAGE_BATCH_SIZE } }),
     staleTime: 60_000,
   });
 
   const [lightbox, setLightbox] = useState<number | null>(null);
-  const images: Img[] = data?.ok ? data.images : [];
   const gallery = data?.ok ? data.gallery : null;
-  const [visibleCount, setVisibleCount] = useState(IMAGE_BATCH_SIZE);
-  const renderedImages = images.slice(0, Math.min(visibleCount, images.length));
+  const [images, setImages] = useState<Img[]>([]);
+  const [offset, setOffset] = useState(0);
+  const [hasMore, setHasMore] = useState(false);
+  const [totalCount, setTotalCount] = useState(0);
+  const [loadingMore, setLoadingMore] = useState(false);
 
   useEffect(() => {
-    setVisibleCount(IMAGE_BATCH_SIZE);
-  }, [token]);
+    if (data?.ok) {
+      setImages(data.photos);
+      setOffset(IMAGE_BATCH_SIZE);
+      setHasMore(data.hasMore);
+      setTotalCount(data.totalCount);
+    } else {
+      setImages([]);
+      setOffset(0);
+      setHasMore(false);
+      setTotalCount(0);
+    }
+  }, [data]);
+
+  async function loadMore() {
+    if (loadingMore || !hasMore) return;
+    setLoadingMore(true);
+    try {
+      const res = await fetchGallery({ data: { token, offset, limit: IMAGE_BATCH_SIZE } });
+      if (res.ok) {
+        setImages((prev) => {
+          const seen = new Set(prev.map((p) => p.id));
+          return [...prev, ...res.photos.filter((p) => !seen.has(p.id))];
+        });
+        setOffset((o) => o + IMAGE_BATCH_SIZE);
+        setHasMore(res.hasMore);
+        setTotalCount(res.totalCount);
+      }
+    } finally {
+      setLoadingMore(false);
+    }
+  }
+
 
 
   const close = useCallback(() => setLightbox(null), []);

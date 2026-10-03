@@ -1,0 +1,1 @@
+ALTER TABLE public.gallery_images ADD COLUMN alt_text text;

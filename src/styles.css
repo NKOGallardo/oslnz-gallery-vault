@@ -265,13 +265,6 @@ h1, h2, h3, h4 { font-family: var(--font-serif); letter-spacing: -0.02em; line-h
 
 .gallery-images { padding-bottom: 6rem; }
 .gallery-images__empty { padding: 6rem 0; text-align: center; }
-.load-top-images {
-  min-height: 3.75rem;
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  scroll-margin-top: 1rem;
-}
 .load-more-images {
   display: flex;
   justify-content: center;

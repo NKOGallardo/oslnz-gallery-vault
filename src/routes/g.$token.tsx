@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { useEffect, useState, useCallback, useRef } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { getGalleryByToken, getImageDownloadUrl, recordGalleryDownload } from "@/lib/gallery.functions";
 import { OslnzLogo } from "@/components/OslnzLogo";
 import { BlurImage } from "@/components/BlurImage";
@@ -36,51 +36,13 @@ function GalleryView() {
   const [lightbox, setLightbox] = useState<number | null>(null);
   const images: Img[] = data?.ok ? data.images : [];
   const gallery = data?.ok ? data.gallery : null;
-  const [hiddenCount, setHiddenCount] = useState(0);
   const [visibleCount, setVisibleCount] = useState(IMAGE_BATCH_SIZE);
-  const galleryTopRef = useRef<HTMLDivElement>(null);
-  const passedImagesRef = useRef(new Set<number>());
-  const renderedImages = images.slice(hiddenCount, Math.min(visibleCount, images.length));
+  const renderedImages = images.slice(0, Math.min(visibleCount, images.length));
 
   useEffect(() => {
-    setHiddenCount(0);
     setVisibleCount(IMAGE_BATCH_SIZE);
-    passedImagesRef.current.clear();
   }, [token]);
 
-  useEffect(() => {
-    if (renderedImages.length === 0) return;
-
-    const items = document.querySelectorAll<HTMLElement>("[data-gallery-index]");
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          const index = Number((entry.target as HTMLElement).dataset.galleryIndex);
-          if (!entry.isIntersecting && entry.boundingClientRect.bottom < 0 && Number.isInteger(index)) {
-            passedImagesRef.current.add(index);
-          }
-        }
-
-        setHiddenCount((current) => {
-          let next = current;
-          while (passedImagesRef.current.has(next) && next < visibleCount) next += 1;
-          return next;
-        });
-      },
-      { threshold: 0 },
-    );
-
-    items.forEach((item) => observer.observe(item));
-    return () => observer.disconnect();
-  }, [hiddenCount, renderedImages.length, visibleCount]);
-
-  const restoreTopImages = useCallback(() => {
-    passedImagesRef.current.clear();
-    setHiddenCount(0);
-    requestAnimationFrame(() => {
-      galleryTopRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-    });
-  }, []);
 
   const close = useCallback(() => setLightbox(null), []);
   const prev = useCallback(
@@ -220,16 +182,9 @@ function GalleryView() {
           </p>
         ) : (
           <>
-            <div ref={galleryTopRef} className="load-top-images">
-              {hiddenCount > 0 && (
-                <button type="button" className="load-button" onClick={restoreTopImages}>
-                  ↑ Load Top
-                </button>
-              )}
-            </div>
             <div className="masonry">
             {renderedImages.map((img, offset) => {
-              const idx = hiddenCount + offset;
+              const idx = offset;
               const shape = `shape-${idx % 7}`;
               const radius = `radius-${idx % 4}`;
               return (
